@@ -53,7 +53,7 @@ function Homepage() {
         className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center text-white text-center px-4"
        style={{
     backgroundImage: `url(${heroImg})`,
-    backgroundSize: "contain", 
+    backgroundSize: "100% 100%", 
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
     height: "100vh",
