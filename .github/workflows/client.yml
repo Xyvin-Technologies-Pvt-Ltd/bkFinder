@@ -1,0 +1,90 @@
+name: Deploy TradeExpo Client to AWS Lightsail
+
+on:
+  push:
+    paths:
+      - "client/**"
+      - ".github/workflows/client.yml"
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "client/package-lock.json"
+
+      # Step 3: Install dependencies and build the React client
+      - name: Install Dependencies and Build Client
+        env:
+          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+        run: |
+          cd client
+          npm ci
+          npm run build
+          mv dist tradeexpo-client
+
+      # Step 4: Test SSH connection
+      - name: Verify SSH Connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_KEY }}
+          script: echo "✅ SSH connection successful!"
+
+      # Step 5: Prepare remote directory
+      - name: Clean Temporary Directory on Lightsail
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_KEY }}
+          script: |
+            rm -rf ~/tradeexpo-deploy
+            mkdir -p ~/tradeexpo-deploy
+            chmod 775 ~/tradeexpo-deploy
+
+      # Step 6: Copy built files to Lightsail
+      - name: Upload Files to Lightsail via Rsync
+        uses: burnett01/rsync-deployments@5.2.1
+        with:
+          switches: -avzr --delete
+          path: ./client/tradeexpo-client/
+          remote_path: ~/tradeexpo-deploy/
+          remote_host: ${{ secrets.LIGHTSAIL_HOST }}
+          remote_user: ${{ secrets.LIGHTSAIL_USER }}
+          remote_key: ${{ secrets.LIGHTSAIL_KEY }}
+
+      # Step 7: Deploy on Lightsail
+      - name: Deploy to Lightsail
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_KEY }}
+          script: |
+            echo "🚀 Deploying TradeExpo Client..."
+            sudo rm -rf /var/www/html/tradeexpo
+            sudo mkdir -p /var/www/html/tradeexpo
+            sudo cp -R ~/tradeexpo-deploy/* /var/www/html/tradeexpo
+            sudo chown -R www-data:www-data /var/www/html/tradeexpo
+            sudo chmod -R 755 /var/www/html/tradeexpo
+            sudo rm -rf ~/tradeexpo-deploy
+
+            echo "🔁 Restarting Nginx..."
+            sudo systemctl restart nginx
+
+            echo "✅ TradeExpo Client Deployment Completed!"
