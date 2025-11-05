@@ -11,3 +11,5 @@ export const registerUser = (data) => {
 
 //get list
 export const getUsers = () => API.get("/api/users/list");
+
+export const loginAdmin = (data) => API.post("/api/auth/login", data);

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import logo from "../logos/bk-logo.png";
+import { loginAdmin } from "../api/userApi";
 
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -13,7 +13,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", form);
+     const res = await loginAdmin(form); 
       if (res.data.success) {
         toast.success("Login successful!");
         localStorage.setItem("isLoggedIn", "true");
