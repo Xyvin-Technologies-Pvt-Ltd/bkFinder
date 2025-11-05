@@ -5,6 +5,7 @@ import brand3 from "../logos/brand3.png";
 import heroImg from "../assets/expo 16x9.jpg";
 import heroImgSm from "../assets/trade expo 393x852.jpg";
 import { registerUser } from "../api/userApi";
+import { toast } from "sonner";
 
 
 function Homepage() {
@@ -33,11 +34,11 @@ function Homepage() {
     try {
       const res = await registerUser(formData);
       console.log(res.data);
-      alert("Registration successful!");
+      toast.success("Registration successful!")
       setFormData({ name: "", phone: "", email: "", place: "" });
     } catch (err) {
       console.error("Error submitting form:", err);
-      alert("Error submitting form");
+      toast.error("Error submitting form");
     }
   };
 
@@ -78,7 +79,7 @@ function Homepage() {
           >
             <span className="absolute inset-0 bg-linear-to-r from-yellow-300 to-green-400 rounded-full transition-transform duration-1500 ease-in-out group-hover:rotate-180"></span>
             <span className="relative z-10 transform scale-100 transition-all duration-1000 ease-in-out group-hover:scale-140 group-hover:tracking-wider">
-              BOOK YOUR STALL NOW
+              BOOK YOUR TICKET NOW
             </span>
           </button>
         </div>
@@ -89,7 +90,7 @@ function Homepage() {
         <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 px-4 py-16">
           <div className="text-center mb-10">
             <h2 className="text-4xl sm:text-7xl font-extrabold text-gray-800 mb-3 py-2 uppercase tracking-tight">
-              Book Your Stall
+              Book Your Ticket Now
             </h2>
             <p className="text-gray-600 font-extralight mb-5 text-sm sm:text-base max-w-lg mx-auto">
               Fill in your details and secure your spot at Kerala’s Largest Trade Expo.
