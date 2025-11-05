@@ -161,12 +161,12 @@ function Homepage() {
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 <input type="checkbox" className="border border-gray-400" required />
                 <label className="text-sm text-gray-600">
                   I confirm I’m 18 years of age or older
                 </label>
-              </div>
+              </div> */}
 
               <div className="pt-6 text-center">
                 <button
