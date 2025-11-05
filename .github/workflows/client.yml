@@ -1,4 +1,4 @@
-name: Deploy TradeExpo Client to AWS Lightsail
+name: Deploy TradeExpo Client to  Lightsail
 
 on:
   push:
