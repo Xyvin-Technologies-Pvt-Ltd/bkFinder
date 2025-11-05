@@ -6,6 +6,8 @@ import heroImg from "../assets/expo 16x9.jpg";
 import heroImgSm from "../assets/trade expo 393x852.jpg";
 import { registerUser } from "../api/userApi";
 import { toast } from "sonner";
+import skybertech_logo from "../logos/skybertech_logo.png";
+import xyvin_logo from "../logos/Xyvin_logo.png";
 
 
 function Homepage() {
@@ -75,7 +77,7 @@ function Homepage() {
 
           <button
             onClick={scrollToForm}
-            className="relative mt-3 px-10 py-3 font-extrabold text-black rounded-full overflow-hidden group"
+            className="relative mt-3 px-10 py-3 font-extrabold text-black rounded-full overflow-hidden group cursor-pointer"
           >
             <span className="absolute inset-0 bg-linear-to-r from-yellow-300 to-green-400 rounded-full transition-transform duration-1500 ease-in-out group-hover:rotate-180"></span>
             <span className="relative z-10 transform scale-100 transition-all duration-1000 ease-in-out group-hover:scale-140 group-hover:tracking-wider">
@@ -171,9 +173,18 @@ function Homepage() {
               <div className="pt-6 text-center">
                 <button
                   type="submit"
-                  className="bg-linear-to-r from-indigo-500 to-blue-500 text-white text-sm font-semibold px-10 py-3 rounded-full shadow-lg hover:opacity-90 transition duration-200"
+                  className="relative inline-block px-10 py-3 rounded-full overflow-hidden group focus:outline-none"
                 >
-                  Register
+
+                  <span className="absolute inset-0 rounded-full bg-linear-to-r from-yellow-300 to-green-400 transition-opacity duration-700 ease-in-out opacity-100 group-hover:opacity-0" />
+
+
+                  <span className="absolute inset-0 rounded-full bg-linear-to-r from-green-400 to-yellow-300 transition-opacity duration-700 ease-in-out opacity-0 group-hover:opacity-100" />
+
+
+                  <span className="relative z-10 text-black font-semibold text-sm">
+                    Register
+                  </span>
                 </button>
               </div>
 
@@ -225,34 +236,55 @@ function Homepage() {
       </section>
 
       {/* Featured Brands Section */}
-      <section className="min-h-screen bg-white flex flex-col justify-center items-center text-center px-4 sm:px-6">
-        <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3 uppercase tracking-tight">
-          Featured Brands
-        </h2>
-        <p className="text-gray-600 mb-1 sm:mb-16 text-base sm:text-lg max-w-2xl">
-          Discover the leading brands and partners joining our event
-        </p>
+      <section className="min-h-screen bg-white flex flex-col justify-between items-center text-center px-4 sm:px-6">
+        {/* Top content */}
+        <div className="flex flex-col justify-center items-center flex-grow">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3 uppercase tracking-tight">
+            Featured Brands
+          </h2>
+          <p className="text-gray-600 mb-1 sm:mb-16 text-base sm:text-lg max-w-2xl">
+            Discover the leading brands and partners joining our event
+          </p>
 
-        {/* Logos + Names */}
-        <div className="flex flex-wrap justify-center items-end gap-12 sm:gap-32 max-w-6xl">
-          {logos.map((logo, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center justify-end w-28 sm:w-72"
-            >
-              <div className="flex items-end justify-center h-36 sm:h-44">
-                <img
-                  src={logo.img}
-                  alt={logo.name}
-                  className="w-full h-auto object-contain grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500 ease-in-out"
-                />
+          {/* Logos + Names */}
+          <div className="flex flex-wrap justify-center items-end gap-12 sm:gap-32 max-w-6xl">
+            {logos.map((logo, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center justify-end w-28 sm:w-72"
+              >
+                <div className="flex items-end justify-center h-36 sm:h-44">
+                  <img
+                    src={logo.img}
+                    alt={logo.name}
+                    className="w-full h-auto object-contain grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500 ease-in-out"
+                  />
+                </div>
+                <h3 className="mt-4 text-base sm:text-lg font-medium text-gray-700 text-center">
+                  {logo.name}
+                </h3>
               </div>
-              <h3 className="mt-4 text-base sm:text-lg font-medium text-gray-700 text-center">
-                {logo.name}
-              </h3>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
+        {/* Footer - pinned at bottom of section */}
+        <footer className="w-full py-4 mt-10">
+          <div className="flex sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-500 text-xs sm:text-base font-medium">
+            <span>Powered by</span>
+            <img
+              src={skybertech_logo}
+              alt="SkyberTech"
+              className="h-4 sm:h-6 object-contain"
+            />
+            <span>in association with</span>
+            <img
+              src={xyvin_logo}
+              alt="Xyvin"
+              className="h-4 sm:h-6 object-contain"
+            />
+          </div>
+        </footer>
       </section>
     </div>
   );
