@@ -60,8 +60,9 @@ function ViewExcel() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
-      <h1 className="text-3xl font-bold mt-7">Registered Users</h1>
-      <p className="text-lg font-semibold mb-6 text-gray-600">
+      <h1 className="text-3xl font-bold mt-10">Registered Users</h1>
+       
+<p className="text-lg font-semibold mb-6 text-gray-600">
   Total Registered: {data.length}
 </p>
 

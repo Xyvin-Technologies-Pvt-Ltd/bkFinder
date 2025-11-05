@@ -62,14 +62,14 @@ function Homepage() {
           width: "100%",
         }}
       >
-        <div className="-mb-20 sm:-mt-14 md:-mt-90">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg tracking-widest">
+        <div className="-mb-40 sm:-mt-14 md:-mt-90">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg tracking-widest text-yellow-900 sm:text-white">
             KERALA'S
           </h1>
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold drop-shadow-lg tracking-widest">
+          <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold drop-shadow-lg tracking-widest text-gray-800 sm:text-white">
             LARGEST
           </h1>
-          <h1 className="text-2xl sm:text-3xl md:text-6xl font-extrabold drop-shadow-lg tracking-widest">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg tracking-widest text-lime-800 sm:text-white">
             TRADE EXPO
           </h1>
 
@@ -185,7 +185,7 @@ function Homepage() {
         </div>
       </section>
       {/* About Section */}
-      <section className="bg-white py-24 sm:py-36 px-4 sm:px-8 md:px-16 text-center">
+      {/* <section className="bg-white py-24 sm:py-36 px-4 sm:px-8 md:px-16 text-center">
         <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
           About
         </h2>
@@ -195,7 +195,7 @@ function Homepage() {
           concert, or private celebration, we craft experiences that leave a
           lasting impression.
         </p>
-      </section>
+      </section> */}
 
       {/* Stats Section */}
       <section
