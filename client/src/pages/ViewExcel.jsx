@@ -160,74 +160,46 @@ function ViewExcel() {
         </div>
 
         {/* Pagination + Actions */}
-        <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="fixed bottom-1 left-0 w-full py-3 flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
+          {/* Pagination buttons */}
+          <div className="flex items-center gap-3">
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1}
-              className={`w-full sm:w-auto px-4 py-2 rounded-lg ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
                 }`}
             >
               Previous
             </button>
 
-            <div className="text-sm text-gray-700 font-medium px-3">
+            <div className="text-sm text-gray-700 font-medium">
               Page {currentPage} of {totalPages}
             </div>
 
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`w-full sm:w-auto px-4 py-2 rounded-lg ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
                 }`}
             >
               Next
             </button>
           </div>
 
-          <div className="flex gap-3 w-full sm:w-auto">
-            <button
-              onClick={handleDownload}
-              className="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-            >
-              Download Excel
-            </button>
-          </div>
+          {/* Download button */}
+          <button
+            onClick={handleDownload}
+            className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-all"
+          >
+            Download Excel
+          </button>
         </div>
       </div>
-      <footer className="fixed bottom-0 left-0 w-full py-4shadow-inner">
-        <div className="flex sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-500 text-xs sm:text-base font-medium">
-          <span>Technology Partner</span>
-          <a
-            href="https://skybertech.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center"
-          >
-            <img
-              src={skybertech_logo}
-              alt="SkyberTech"
-              className="h-4 sm:h-6 object-contain hover:opacity-80 transition-opacity duration-300"
-            />
-          </a>
 
-          <span>in association with</span>
-
-          {/* Xyvin Logo */}
-          <a
-            href="https://www.xyvin.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center"
-          >
-            <img
-              src={xyvin_logo}
-              alt="Xyvin"
-              className="h-4 sm:h-6 object-contain hover:opacity-80 transition-opacity duration-300"
-            />
-          </a>
-        </div>
-      </footer>
     </div>
   );
 }
