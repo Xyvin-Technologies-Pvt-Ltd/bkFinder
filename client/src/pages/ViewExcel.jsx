@@ -4,6 +4,8 @@ import { saveAs } from "file-saver";
 import { getUsers } from "../api/userApi";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "sonner";
+import skybertech_logo from "../logos/skybertech_logo.png";
+import xyvin_logo from "../logos/Xyvin_logo.png";
 
 function ViewExcel() {
   const [data, setData] = useState([]);
@@ -27,13 +29,13 @@ function ViewExcel() {
   }, []);
 
 
-const handleLogout = () => {
+  const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     toast.success("Logged out successfully!");
     setTimeout(() => navigate("/login"), 800);
   };
 
-  
+
   // Pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -78,8 +80,6 @@ const handleLogout = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 sm:p-6">
-      <Toaster richColors />
-
       <div className="w-full flex justify-end mb-4">
         <button
           onClick={handleLogout}
@@ -165,9 +165,8 @@ const handleLogout = () => {
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 1}
-              className={`w-full sm:w-auto px-4 py-2 rounded-lg ${
-                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
-              }`}
+              className={`w-full sm:w-auto px-4 py-2 rounded-lg ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
             >
               Previous
             </button>
@@ -179,9 +178,8 @@ const handleLogout = () => {
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className={`w-full sm:w-auto px-4 py-2 rounded-lg ${
-                currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
-              }`}
+              className={`w-full sm:w-auto px-4 py-2 rounded-lg ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
             >
               Next
             </button>
@@ -197,6 +195,39 @@ const handleLogout = () => {
           </div>
         </div>
       </div>
+      <footer className="fixed bottom-0 left-0 w-full py-4shadow-inner">
+        <div className="flex sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-500 text-xs sm:text-base font-medium">
+          <span>Technology Partner</span>
+          <a
+            href="https://skybertech.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center"
+          >
+            <img
+              src={skybertech_logo}
+              alt="SkyberTech"
+              className="h-4 sm:h-6 object-contain hover:opacity-80 transition-opacity duration-300"
+            />
+          </a>
+
+          <span>in association with</span>
+
+          {/* Xyvin Logo */}
+          <a
+            href="https://www.xyvin.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center"
+          >
+            <img
+              src={xyvin_logo}
+              alt="Xyvin"
+              className="h-4 sm:h-6 object-contain hover:opacity-80 transition-opacity duration-300"
+            />
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
