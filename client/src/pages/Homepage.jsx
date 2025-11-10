@@ -66,13 +66,13 @@ function Homepage() {
         }}
       >
         <div className="-mb-40 sm:-mt-14 md:-mt-90">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg tracking-widest text-yellow-900 sm:text-white">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg cursor-default tracking-widest text-yellow-900 sm:text-white">
             KERALA'S
           </h1>
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold drop-shadow-lg tracking-widest text-gray-800 sm:text-white">
+          <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold drop-shadow-lg cursor-default tracking-widest text-gray-800 sm:text-white">
             LARGEST
           </h1>
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg tracking-widest text-lime-800 sm:text-white">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg cursor-default tracking-widest text-lime-800 sm:text-white">
             TRADE EXPO
           </h1>
 
@@ -174,7 +174,7 @@ function Homepage() {
               <div className="pt-6 text-center">
                 <button
                   type="submit"
-                  className="relative inline-block px-10 py-3 rounded-full overflow-hidden group focus:outline-none"
+                  className="relative inline-block px-10 py-3 cursor-pointer rounded-full overflow-hidden group focus:outline-none"
                 >
 
                   <span className="absolute inset-0 rounded-full bg-linear-to-r from-yellow-300 to-green-400 transition-opacity duration-700 ease-in-out opacity-100 group-hover:opacity-0" />
@@ -197,7 +197,7 @@ function Homepage() {
         </div>
       </section>
 
-      
+
       {/* About Section */}
       {/* <section className="bg-white py-24 sm:py-36 px-4 sm:px-8 md:px-16 text-center">
         <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
@@ -238,81 +238,82 @@ function Homepage() {
         </div>
       </section>
 
-      {/* Featured Brands Section */}
       <section className="min-h-screen bg-white flex flex-col items-center text-center">
         {/* Top content */}
-        <div className="flex flex-col justify-center items-center flex-grow">
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3 uppercase tracking-tight">
+        <div className="flex flex-col justify-center items-center grow w-full">
+          <h2 className="text-3xl sm:text-5xl font-bold text-gray-900 mb-3 uppercase tracking-tight">
             Featured Brands
           </h2>
-          <p className="text-gray-600 mb-1 sm:mb-16 text-base sm:text-lg max-w-2xl">
+          <p className="text-gray-600 mb-8 sm:mb-16 text-base sm:text-lg max-w-2xl">
             Discover the leading brands and partners joining our event
           </p>
 
           {/* Logos + Names */}
-          <div className="flex flex-wrap justify-center items-end gap-12 sm:gap-32 max-w-6xl">
+          <div className="flex flex-wrap justify-center items-start gap-y-6 gap-x-10 sm:gap-y-10 sm:gap-x-20 max-w-6xl">
             {logos.map((logo, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center justify-end w-28 sm:w-72"
+                className="flex flex-col items-center justify-start w-28 sm:w-56"
               >
-                <div className="flex items-end justify-center h-36 sm:h-44">
+
+                <div className="flex flex-col items-center justify-end h-24 sm:h-36">
                   <img
                     src={logo.img}
                     alt={logo.name}
-                    className="w-full h-auto object-contain grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500 ease-in-out"
+                    className="h-16 sm:h-24 object-contain grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500 ease-in-out"
                   />
                 </div>
-                <h3 className="mt-4 text-base sm:text-lg font-medium text-gray-700 text-center">
+                <h3 className="mt-3 text-sm sm:text-lg font-medium text-gray-700 text-center leading-tight h-10 flex items-start">
                   {logo.name}
                 </h3>
               </div>
             ))}
           </div>
         </div>
-        
-        <div className="w-full mt-16">
-          <img
-            src={footer_trade_expo}
-            alt="Footer Banner"
-            className="w-full h-auto object-cover"
-          />
-        </div>
+        <footer>
+          <div className="w-full mt-16">
+            <img
+              src={footer_trade_expo}
+              alt="Footer Banner"
+              className="w-full h-auto object-cover"
+            />
+          </div>
 
-        {/* Footer */}
-        <footer className="w-full">
-          <div className="flex sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-500 text-xs sm:text-lg font-medium">
-            <span>Technology Partner</span>
-            <a
-              href="https://skybertech.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center"
-            >
-              <img
-                src={skybertech_logo}
-                alt="SkyberTech"
-                className="h-4 sm:h-6 object-contain hover:opacity-80 transition-opacity duration-300"
-              />
-            </a>
+          <div className="w-full my-3 sm:my-0">
+            <div className="flex sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-500 text-xs sm:text-lg font-medium">
+              <span>Technology Partner</span>
+              <a
+                href="https://skybertech.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center"
+              >
+                <img
+                  src={skybertech_logo}
+                  alt="SkyberTech"
+                  className="h-4 sm:h-6 object-contain hover:opacity-80 transition-opacity duration-300"
+                />
+              </a>
 
-            <span>in association with</span>
+              <span>in association with</span>
 
-            {/* Xyvin Logo */}
-            <a
-              href="https://www.xyvin.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center"
-            >
-              <img
-                src={xyvin_logo}
-                alt="Xyvin"
-                className="h-4 sm:h-6 object-contain hover:opacity-80 transition-opacity duration-300"
-              />
-            </a>
+              {/* Xyvin Logo */}
+              <a
+                href="https://www.xyvin.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center"
+              >
+                <img
+                  src={xyvin_logo}
+                  alt="Xyvin"
+                  className="h-4 sm:h-6 object-contain hover:opacity-80 transition-opacity duration-300"
+                />
+              </a>
+            </div>
           </div>
         </footer>
+
       </section>
     </div>
   );
