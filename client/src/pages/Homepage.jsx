@@ -17,6 +17,8 @@ function Homepage() {
     phone: "",
     email: "",
     place: "",
+    cName: "",
+    cType: "",
   });
   const formRef = useRef(null);
 
@@ -164,7 +166,7 @@ function Homepage() {
                 </div>
               </div>
 
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-extrabold text-gray-700 mb-2">
                     Company Name <span className="text-red-500">*</span>
@@ -251,25 +253,27 @@ function Homepage() {
             "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://wallpapercat.com/w/full/d/3/1/1419131-3840x2160-desktop-4k-new-york-at-night-background-image.jpg')",
         }}
       >
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
+        <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-4 gap-y-15 sm:gap-8 text-center">
           {[
             { value: "6000+", label: "Visitors" },
             { value: "200+", label: "B2B Stalls" },
             { value: "100000 Sq. Ft.", label: "Programme Hall" },
             { value: "50", label: "Expert Speakers" },
           ].map((item, index) => (
-            <div key={index}>
-              <h3 className="text-3xl sm:text-4xl font-bold text-orange-500">
-                {item.value}
-              </h3>
-              <p className="uppercase text-xs sm:text-sm tracking-wider text-gray-200">
+            <div key={index} className="flex flex-col items-center justify-start">
+              <div className="h-10 sm:h-12 flex items-end justify-center">
+                <h3 className="text-3xl sm:text-4xl font-bold text-orange-500 leading-none">
+                  {item.value}
+                </h3>
+              </div>
+              <p className="uppercase text-xs sm:text-sm tracking-wider text-gray-200 mt-1 leading-tight">
                 {item.label}
               </p>
             </div>
           ))}
         </div>
       </section>
-
+      {/* Featured brand and footer section */}
       <section className="min-h-screen bg-white flex flex-col items-center text-center">
         {/* Top content */}
         <div className="flex flex-col justify-center items-center grow w-full">
