@@ -285,7 +285,7 @@ function Homepage() {
 
           {/* Logos + Names */}
           <div className="flex flex-wrap justify-center items-start
-           gap-x-10 sm:gap-y-10 sm:gap-x-20 max-w-6xl">
+           gap-x-15 sm:gap-y-10 sm:gap-x-20 max-w-6xl">
             {logos.map((logo, index) => (
               <div
                 key={index}
