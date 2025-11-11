@@ -297,7 +297,7 @@ function Homepage() {
                     src={logo.img}
                     alt={logo.name}
                     className={`h-16 sm:h-24 object-contain grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500 ease-in-out ${
-            index === 0 ? "-translate-x-2 sm:translate-x-0" : ""
+            index === 0 ? "translate-y-1 sm:translate-y-0" : ""
           }`}
                   />
                 </div>
