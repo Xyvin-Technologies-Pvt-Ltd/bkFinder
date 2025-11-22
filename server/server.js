@@ -11,17 +11,20 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 const allowedOrigins = [
-    "http://localhost:5173",
-    "https://bkfinder.com"
-  ]
-  
-  app.use(cors({
-    origin: allowedOrigins,
-    credentials: true
-  }))
+  "http://localhost:5173",
+  "https://bkfinder.com",
+  "https://www.bkfinder.com",
+  "https://admin.bkfinder.com",
+  "https://www.admin.bkfinder.com"
+]
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}))
 
 
-app.get("/",(req,res)=>[
+app.get("/", (req, res) => [
   res.json("Hello World")
 ])
 
@@ -36,7 +39,7 @@ app.use("/frame", express.static(path.join(__dirname, "public/frame")));
 dbConnection()
 
 app.use("/api/users", router);
-app.use("/api/auth", authRouter); 
+app.use("/api/auth", authRouter);
 app.use("/api/stall", stallRouter)
 
 const PORT = process.env.PORT || 8080;
