@@ -71,7 +71,7 @@ function ImageCropper({ photo, onCancel, onCropDone }) {
             className="px-4 py-2 bg-green-700 hover:bg-green-900 text-white rounded-lg"
             onClick={getCroppedImg}
           >
-            Crop & Save
+            Upload
           </button>
         </div>
       </div>
