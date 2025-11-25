@@ -13,6 +13,8 @@ export default function CardPage() {
         getUserById(id).then(res => setUser(res.data)).catch(console.error);
     }, [id]);
 
+    
+
     if (!user) return <div className="p-10 text-center">Loading...</div>;
 
     const downloadPDF = async () => {
