@@ -56,7 +56,6 @@ function Homepage() {
     }
 
     if (!formData.place.trim()) newErrors.place = "Place is required";
-    if (!formData.cName.trim()) newErrors.cName = "Company Name is required";
     if (!formData.photo) newErrors.photo = "Upload a photo";
 
     setErrors(newErrors);
@@ -361,7 +360,7 @@ function Homepage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-extrabold text-gray-700 mb-2">
-                      Company Name <span className="text-red-500">*</span>
+                      Company Name
                     </label>
                     <input
                       type="text"
