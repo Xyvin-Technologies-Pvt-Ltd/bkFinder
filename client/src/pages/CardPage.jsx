@@ -14,7 +14,7 @@ export default function CardPage() {
         getUserById(id).then(res => setUser(res.data)).catch(console.error);
     }, [id]);
 
-    
+
 
     if (!user) return <div className="p-10 text-center">Loading...</div>;
 
@@ -40,14 +40,29 @@ export default function CardPage() {
 
     return (
         <div className="relative w-full h-screen bg-gray-100 flex items-center justify-center overflow-hidden">
-
-            {/* BACK BUTTON */}
-            <button
+            {/* Home button */}
+            {/* <button
                 onClick={() => navigate("/")}
-                className="absolute top-5 left-5 text-lg font-semibold text-gray-700 hover:underline cursor-pointer"
+                className="absolute top-5 left-5 flex items-center gap-2 text-lg font-semibold text-gray-700 hover:text-black cursor-pointer"
             >
-                ← Back
-            </button>
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.8}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 9.75L12 3l9 6.75v8.25A2.25 2.25 0 0118.75 21H5.25A2.25 2.25 0 013 18V9.75z"
+                    />
+                </svg>
+
+                Home
+            </button> */}
 
             {/* DOWNLOAD BUTTON */}
             <button
