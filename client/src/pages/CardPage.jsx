@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getUserById } from "../api/userApi";
 import * as htmlToImage from "html-to-image";
 import jsPDF from "jspdf";
@@ -8,6 +8,7 @@ export default function CardPage() {
     const { id } = useParams();
     const [user, setUser] = useState(null);
     const cardRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getUserById(id).then(res => setUser(res.data)).catch(console.error);
@@ -42,7 +43,7 @@ export default function CardPage() {
 
             {/* BACK BUTTON */}
             <button
-                onClick={() => window.history.back()}
+                onClick={() => navigate("/")}
                 className="absolute top-5 left-5 text-lg font-semibold text-gray-700 hover:underline cursor-pointer"
             >
                 ← Back
