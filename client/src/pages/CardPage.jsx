@@ -129,6 +129,7 @@ export default function CardPage() {
                             }}
                         />
                     )}
+                    
 
                     {/* QR */}
                     {user.qr && (
