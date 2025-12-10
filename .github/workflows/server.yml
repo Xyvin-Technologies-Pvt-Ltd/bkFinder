@@ -110,6 +110,7 @@ jobs:
               --restart always \
               --name ${{ env.CONTAINER_NAME }} \
               --env-file ${{ env.ENV_FILE_PATH }} \
+               -v /home/ubuntu/trade-expo/userPhotos:/usr/src/app/public/userPhotos \
               ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
             # Verify deployment
