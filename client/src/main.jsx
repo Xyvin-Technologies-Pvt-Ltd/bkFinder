@@ -3,10 +3,9 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 
-// =======================
+
 // 🚧 Maintenance Mode
-// =======================
-const MAINTENANCE = true; // change to false when done
+const MAINTENANCE = false;
 
 if (MAINTENANCE) {
   document.body.innerHTML = `

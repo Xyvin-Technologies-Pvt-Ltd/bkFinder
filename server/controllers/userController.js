@@ -2,16 +2,39 @@ const XLSX = require("xlsx");
 const path = require("path");
 const fs = require("fs");
 const User = require("../model/userModel");
-const QRCode = require("qrcode")
+const QRCode = require("qrcode");
+const { upload_file_to_s3 } = require("../utils/s3_uploader");
+const sharp = require("sharp")
 
-// const SERVER_URL = "http://localhost:8080";
-const SERVER_URL = "https://admin.bkfinder.com";
+
 const CLIENT_URL = "https://bkfinder.com";
 
 // Add a new user
 const addUser = async (req, res) => {
   try {
     const { name, email, phone, place, cName, cType } = req.body;
+
+    let photoUrl = "";
+    if (req.file) {
+      // if HEIC/HEIF convert to jpeg buffer
+      let bufferToUpload = req.file.buffer;
+      const mime = req.file.mimetype;
+
+      if (mime === "image/heic" || mime === "image/heif") {
+        // convert to jpeg 
+        bufferToUpload = await sharp(req.file.buffer).jpeg({ quality: 90 }).toBuffer();
+        // override file metadata for uploader
+        req.file.originalname = req.file.originalname.replace(/\.[^/.]+$/, ".jpg");
+        req.file.mimetype = "image/jpeg";
+        req.file.buffer = bufferToUpload;
+      }
+
+      // upload to s3
+      const s3Url = await upload_file_to_s3(req.file, "userPhotos");
+      photoUrl = s3Url;
+    }
+
+    console.log("helllooo", req.file)
 
     const newUser = new User({
       name,
@@ -20,12 +43,12 @@ const addUser = async (req, res) => {
       place,
       cName,
       cType,
-      photo: req.file ? `${SERVER_URL}/userPhotos/${req.file.filename}` : "",
+      photo: photoUrl,
     });
 
     const cardUrl = `${CLIENT_URL}/card/${newUser._id}`;
     newUser.cardUrl = cardUrl;
-    newUser.qr = await QRCode.toDataURL(cardUrl); 
+    newUser.qr = await QRCode.toDataURL(cardUrl);
 
     await newUser.save();
 
@@ -50,13 +73,13 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res)=>{
+const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    if(!user) return res.status(404).json({error:"User not found"});
+    if (!user) return res.status(404).json({ error: "User not found" });
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({error:"Error fetching user"})
+    res.status(500).json({ error: "Error fetching user" })
   }
 };
 
