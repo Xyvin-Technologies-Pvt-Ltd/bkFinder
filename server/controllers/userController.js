@@ -12,7 +12,7 @@ const CLIENT_URL = "https://bkfinder.com";
 // Add a new user
 const addUser = async (req, res) => {
   try {
-    const { name, email, phone, place, cName, cType } = req.body;
+    const { name, phone, place} = req.body;
 
     let photoUrl = "";
     if (req.file) {
@@ -38,11 +38,8 @@ const addUser = async (req, res) => {
 
     const newUser = new User({
       name,
-      email,
       phone,
       place,
-      cName,
-      cType,
       photo: photoUrl,
     });
 

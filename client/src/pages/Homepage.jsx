@@ -2,8 +2,8 @@ import { useState, useRef } from "react";
 import brand1 from "../logos/brand1.png";
 import brand2 from "../logos/brand2.avif";
 import brand3 from "../logos/brand3.png";
-import heroImg from "../assets/expo 16x9.jpg";
-import heroImgSm from "../assets/trade expo 393x852.jpg";
+import heroImg from "../assets/registration pc.jpg";
+import heroImgSm from "../assets/registration.jpg";
 import { registerStall, registerUser } from "../api/userApi";
 import { toast } from "sonner";
 import skybertech_logo from "../logos/skybertech_logo.png";
@@ -51,9 +51,9 @@ function Homepage() {
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
     else if (!/^[0-9]{10}$/.test(formData.phone)) newErrors.phone = "Enter 10 digit number";
 
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Enter a valid email";
-    }
+    // if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    //   newErrors.email = "Enter a valid email";
+    // }
 
     if (!formData.place.trim()) newErrors.place = "Place is required";
     if (!formData.photo) newErrors.photo = "Upload a photo";
@@ -111,10 +111,10 @@ function Homepage() {
       // Append all text fields
       fd.append("name", formData.name);
       fd.append("phone", formData.phone);
-      fd.append("email", formData.email);
+      // fd.append("email", formData.email);
       fd.append("place", formData.place);
-      fd.append("cName", formData.cName);
-      fd.append("cType", formData.cType);
+      // fd.append("cName", formData.cName);
+      // fd.append("cType", formData.cType);
 
       // Append photo file
       if (formData.photo) {
@@ -187,25 +187,31 @@ function Homepage() {
           backgroundImage: `url(${window.innerWidth < 800 ? heroImgSm : heroImg})`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          backgroundPosition: window.innerWidth < 800 ? "top center" : "center center",
+          backgroundPosition: window.innerWidth < 800 ? "top center" : "top center",
           height: "100vh",
           width: "100%",
         }}
       >
-        <div className="-mb-40 sm:-mt-14 md:-mt-90">
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg cursor-default tracking-widest text-yellow-900 sm:text-white">
+        <div className="-mb-110 sm:-mt-14 md:-mt-70 space-y- sm:space-y-0">
+          <h1 className="text-md sm:text-3xl md:text-5xl font-extrabold cursor-default tracking-widest text-white drop-shadow-[0_3px_6px_rgba(0,0,0,0.6)]">
             KERALA'S
           </h1>
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold drop-shadow-lg cursor-default tracking-widest text-gray-800 sm:text-white">
+          <h1 className="text-2xl sm:text-6xl md:text-8xl font-extrabold cursor-default tracking-widesttext-white drop-shadow-[0_3px_6px_rgba(0,0,0,0.7)]">
             LARGEST
           </h1>
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold drop-shadow-lg cursor-default tracking-widest text-lime-800 sm:text-white">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold cursor-default tracking-widest text-white drop-shadow-[0_3px_6px_rgba(0,0,0,0.5)]">
             TRADE EXPO
           </h1>
 
           <button
             onClick={scrollToForm}
-            className="relative mt-3 px-10 py-3 font-extrabold text-black rounded-full overflow-hidden group cursor-pointer"
+             className="
+              relative mt-3
+              px-6 py-2 text-sm
+              sm:px-10 sm:py-3 sm:text-base
+              font-extrabold text-black rounded-full
+              overflow-hidden group cursor-pointer
+              "
           >
             <span className="absolute inset-0 bg-linear-to-r from-yellow-300 to-green-400 rounded-full transition-transform duration-1500 ease-in-out group-hover:rotate-180"></span>
             <span className="relative z-10 transform scale-100 transition-all duration-1000 ease-in-out group-hover:scale-140 group-hover:tracking-wider">
@@ -234,35 +240,35 @@ function Homepage() {
             />
           )}
           {/* ======= EVENT | STALL SWITCHER ======= */}
-<div className="flex items-center gap-6 mb-6 sm:mb-10">
-  <button
-    onClick={() => setActiveForm("event")}
-    className={`
-      text-xl sm:text-4xl font-extrabold uppercase tracking-tight transition-all duration-300
-      ${activeForm === "event"
-        ? "text-black translate-y-0 cursor-default"
-        : "text-gray-400 cursor-pointer hover:-translate-y-1 hover:text-black"
-      }
+          <div className="flex items-center gap-6 mb-6 sm:mb-10">
+            <button
+              onClick={() => setActiveForm("event")}
+              className={`
+              text-xl sm:text-4xl font-extrabold uppercase tracking-tight transition-all duration-300
+              ${activeForm === "event"
+                  ? "text-black translate-y-0 cursor-default"
+                  : "text-gray-400 cursor-pointer hover:-translate-y-1 hover:text-black"
+                }
     `}
-  >
-    Event
-  </button>
+            >
+              Event
+            </button>
 
-  <span className="text-gray-400 text-xl sm:text-6xl -translate-y sm:-translate-y-1">|</span>
+            <span className="text-gray-400 text-xl sm:text-6xl -translate-y sm:-translate-y-1">|</span>
 
-  <button
-    onClick={() => setActiveForm("stall")}
-    className={`
-      text-xl sm:text-4xl font-extrabold uppercase tracking-tight transition-all duration-300
-      ${activeForm === "stall"
-        ? "text-black translate-y-0 cursor-default"
-        : "text-gray-400 cursor-pointer hover:-translate-y-1 hover:text-black"
-      }
+            <button
+              onClick={() => setActiveForm("stall")}
+              className={`
+              text-xl sm:text-4xl font-extrabold uppercase tracking-tight transition-all duration-300
+              ${activeForm === "stall"
+                  ? "text-black translate-y-0 cursor-default"
+                  : "text-gray-400 cursor-pointer hover:-translate-y-1 hover:text-black"
+                }
     `}
-  >
-    Stall
-  </button>
-</div>
+            >
+              Stall
+            </button>
+          </div>
           {/* =================== EVENT FORM =================== */}
           {activeForm === "event" && (
             <div className="w-full max-w-2xl bg-white shadow-xl rounded-3xl py-3 sm px-10 sm:p-10 animate-fadeIn">
@@ -277,51 +283,51 @@ function Homepage() {
                 </p>
               </div>
 
-              <form className="space-y-8" onSubmit={handleSubmit}>
+              <form className="space-y-5" onSubmit={handleSubmit}>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-extrabold text-gray-700 mb-2">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Jane D'Souza"
+                <div className="grid grid-cols-1">
 
-                      className={`w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-3 text-gray-700 placeholder-gray-300 
+                  <label className="block text-sm font-extrabold text-gray-700 mb-1">
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Jane D'Souza"
+
+                    className={`w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-3 text-gray-700 placeholder-gray-300 
                     focus:bg-white focus:border-blue-400 hover:bg-white   focus:ring-4 focus:ring-blue-100 transition-all duration-300 outline-none
                 ${errors.name ? "border-red-500 bg-red-50" : "border-gray-200 bg-gray-50"}
                 `}
-                    />
-                  </div>
+                  />
+                </div>
 
-                  <div>
-                    <label className="block text-sm font-extrabold text-gray-700 mb-2">
-                      Whatsapp Number <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      inputMode="numeric"
-                      pattern="[0-9]{10}"
-                      maxLength="10"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="+91 99999 88888"
-                      className={`w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-3 text-gray-700 placeholder-gray-300 
+                <div className="grid grid-cols-1">
+                  <label className="block text-sm font-extrabold text-gray-700 mb-1">
+                    Whatsapp Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                    maxLength="10"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="+91 99999 88888"
+                    className={`w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-3 text-gray-700 placeholder-gray-300 
                 focus:bg-white focus:border-blue-400 hover:bg-white focus:ring-4 focus:ring-blue-100 transition-all duration-300 outline-none
                 ${errors.phone ? "border-red-500 bg-red-50" : "border-gray-200 bg-gray-50"}
                 `}
-                    />
-                  </div>
+                  />
+
                 </div>
 
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
+                <div className="grid grid-cols-1">
+                  {/* <div>
                     <label className="block text-sm font-extrabold text-gray-700 mb-2">
                       Email Address
                     </label>
@@ -336,28 +342,28 @@ function Homepage() {
                 ${errors.email ? "border-red-500 bg-red-50" : "border-gray-200 bg-gray-50"}
                 `}
                     />
-                  </div>
+                  </div> */}
 
-                  <div>
-                    <label className="block text-sm font-extrabold text-gray-700 mb-2">
-                      Place <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="place"
-                      value={formData.place}
-                      onChange={handleChange}
-                      placeholder="Kochi"
-                      className={`w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-3 text-gray-700 placeholder-gray-300 
+
+                  <label className="block text-sm font-extrabold text-gray-700 mb-1">
+                    Place <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="place"
+                    value={formData.place}
+                    onChange={handleChange}
+                    placeholder="Kochi"
+                    className={`w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-3 text-gray-700 placeholder-gray-300 
                 focus:bg-white focus:border-blue-400 hover:bg-white focus:ring-4 focus:ring-blue-100 transition-all duration-300 outline-none
                 ${errors.place ? "border-red-500 bg-red-50" : "border-gray-200 bg-gray-50"}
                 `}
-                    />
-                  </div>
+                  />
+
                 </div>
 
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-extrabold text-gray-700 mb-2">
                       Company Name
@@ -389,16 +395,16 @@ function Homepage() {
                 focus:bg-white focus:border-blue-400 hover:bg-white focus:ring-4 focus:ring-blue-100 transition-all duration-300 outline-none"
                     />
                   </div>
-                </div>
+                </div> */}
                 <div className="mb-6">
-                  <label className="block text-sm font-extrabold text-gray-700 mb-2">
+                  <label className="block text-sm font-extrabold text-gray-700 mb-1">
                     Upload Your Photo <span className="text-red-500">*</span>
                   </label>
 
                   <div
                     className={`flex items-center w-full rounded-lg overflow-hidden
-    transition-all duration-300
-    ${errors.photo ? "border border-red-500 bg-red-50" : "border border-gray-300 bg-white"}`}
+                    transition-all duration-300
+                    ${errors.photo ? "border border-red-500 bg-red-50" : "border border-gray-300 bg-white"}`}
                   >
                     {/* Upload Button */}
                     <button

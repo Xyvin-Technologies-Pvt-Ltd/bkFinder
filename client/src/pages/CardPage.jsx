@@ -108,8 +108,10 @@ export default function CardPage() {
                         }}
                     >
                         <h1 className="text-4xl font-semibold" style={{ fontFamily: "Poppins, sans-serif" }}>{user.name}</h1>
-                        {user.cName && (
-                            <p className="text-3xl mt-2 font" style={{ fontFamily: "Poppins, sans-serif" }}>{user.cName}</p>
+                        {(user.place || user.cName) && (
+                            <p className="text-3xl mt-2" style={{ fontFamily: "Poppins, sans-serif" }}>
+                                {user.place || user.cName}
+                            </p>
                         )}
                     </div>
 
