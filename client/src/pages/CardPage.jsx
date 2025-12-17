@@ -34,7 +34,7 @@ export default function CardPage() {
         const node = cardRef.current;
 
         await waitForImages(node);
-        
+
         const width = 1080;
         const height = 1350;
 
@@ -113,6 +113,7 @@ export default function CardPage() {
                     {/* FRAME */}
                     <img
                         src={`${import.meta.env.VITE_BASE_URL}/frame/frame.jpg`}
+                        crossOrigin="anonymous"
                         style={{ width: "100%", height: "100%" }}
                         className="absolute top-0 left-0"
                     />
@@ -138,6 +139,7 @@ export default function CardPage() {
                     {user.photo && (
                         <img
                             src={user.photo}
+                            crossOrigin="anonymous"
                             style={{
                                 position: "absolute",
                                 top: "650px",
@@ -154,6 +156,7 @@ export default function CardPage() {
                     {user.qr && (
                         <img
                             src={user.qr}
+                            crossOrigin="anonymous"
                             style={{
                                 position: "absolute",
                                 bottom: "50px",
