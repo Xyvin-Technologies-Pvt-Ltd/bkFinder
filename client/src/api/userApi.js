@@ -52,5 +52,11 @@ export const getStalls = () => {
 // get single user by id
 export const getUserById = (id) => API.get(`/api/users/${id}`);
 
+// download card pdf
+export const downloadCardPdf = (id) =>
+  API.get(`/api/card-pdf/${id}`, {
+    responseType: "blob",
+  });
+
 
 export default API;
