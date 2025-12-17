@@ -13,10 +13,10 @@ export default function CardPage() {
     const a = document.createElement("a");
     a.href = url;
     a.download = "card.png";
-    a.click();
+    a.click(); 
     URL.revokeObjectURL(url);
   };
-
+ 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
       <button
