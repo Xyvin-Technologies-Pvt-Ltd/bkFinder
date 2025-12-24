@@ -6,17 +6,32 @@ const User = require("../model/userModel");
 const router = express.Router();
 
 /* helper: rounded left rectangle */
-function drawRoundedLeftRect(ctx, x, y, w, h, r) {
+// function drawRoundedLeftRect(ctx, x, y, w, h, r) {
+//   ctx.beginPath();
+//   ctx.moveTo(x + r, y);
+//   ctx.lineTo(x + w, y);
+//   ctx.lineTo(x + w, y + h);
+//   ctx.lineTo(x + r, y + h);
+//   ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+//   ctx.lineTo(x, y + r);
+//   ctx.quadraticCurveTo(x, y, x + r, y);
+//   ctx.closePath();
+// }
+
+function drawRoundedRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w, y);
-  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
   ctx.lineTo(x + r, y + h);
   ctx.quadraticCurveTo(x, y + h, x, y + h - r);
   ctx.lineTo(x, y + r);
   ctx.quadraticCurveTo(x, y, x + r, y);
   ctx.closePath();
 }
+
 
 /* helper: load remote image */
 const loadImageFromUrl = async (url) => {
@@ -67,7 +82,8 @@ const paddingX = 28;
 const paddingY = 22;
 const gap = 10;
 
-ctx.textAlign = "right";
+// ctx.textAlign = "right";
+ctx.textAlign = "center"
 
 /* NAME */
 ctx.font = "bold 35px sans-serif";
@@ -88,12 +104,15 @@ const boxHeight = user.place
   : paddingY * 2 + 35;
 
 /* POSITION (same translateX(-100%)) */
-const boxX = WIDTH / 2 - boxWidth;
+// const boxX = WIDTH / 2 - boxWidth;
+const boxX = (WIDTH - boxWidth) / 2;
 const boxY = 750;
 
 /* DRAW BOX */
 ctx.fillStyle = "#713F98";
-drawRoundedLeftRect(ctx, boxX, boxY, boxWidth, boxHeight, 24);
+// drawRoundedLeftRect(ctx, boxX, boxY, boxWidth, boxHeight, 24);
+drawRoundedRect(ctx, boxX, boxY, boxWidth, boxHeight, 30);
+
 ctx.fill();
 
 /* DRAW NAME */
@@ -101,7 +120,8 @@ ctx.fillStyle = "#ffffff";
 ctx.font = "bold 35px sans-serif";
 ctx.fillText(
   user.name,
-  boxX + boxWidth - paddingX,
+  // boxX + boxWidth - paddingX,
+   boxX + boxWidth / 2,
   boxY + paddingY + 35
 );
 
@@ -110,7 +130,8 @@ if (user.place) {
   ctx.font = "30px sans-serif";
   ctx.fillText(
     user.place,
-    boxX + boxWidth - paddingX,
+    // boxX + boxWidth - paddingX,
+    boxX + boxWidth / 2,
     boxY + paddingY + 35 + gap + 30
   );
 }

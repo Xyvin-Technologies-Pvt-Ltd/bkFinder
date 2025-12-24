@@ -56,7 +56,7 @@ function Homepage() {
     // }
 
     if (!formData.place.trim()) newErrors.place = "Place is required";
-    if (!formData.photo) newErrors.photo = "Upload a photo";
+    // if (!formData.photo) newErrors.photo = "Upload a photo";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -400,6 +400,7 @@ function Homepage() {
                     />
                   </div>
                 </div> */}
+        {/*        
                 <div className="mb-6">
                   <label className="block text-sm font-extrabold text-gray-700 mb-1">
                     Upload Your Photo <span className="text-red-500">*</span>
@@ -410,7 +411,7 @@ function Homepage() {
                     transition-all duration-300
                     ${errors.photo ? "border border-red-500 bg-red-50" : "border border-gray-300 bg-white"}`}
                   >
-                    {/* Upload Button */}
+                    // Upload Button 
                     <button
                       type="button"
                       onClick={() => photoRef.current.click()}
@@ -419,7 +420,7 @@ function Homepage() {
                       Upload File
                     </button>
 
-                    {/* File Name */}
+                    // File Name 
                     <span
                       className={`px-3 py-2 text-sm
                       ${errors.photo ? "text-red-600" : "text-gray-600"}`}
@@ -427,7 +428,7 @@ function Homepage() {
                       {formData.photo ? formData.photo.name : "No file chosen"}
                     </span>
 
-                    {/* Hidden File Input */}
+                    // Hidden File Input
                     <input
                       type="file"
                       name="photo"
@@ -451,7 +452,7 @@ function Homepage() {
                     <p className="text-xs text-red-600 mt-1">{errors.photo}</p>
                   )}
                 </div>
-
+ */}
                 {/* Submit Button */}
                 <div className="pt-6 text-center">
                   <button
