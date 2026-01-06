@@ -364,7 +364,7 @@ function Homepage() {
           <div className="flex flex-[2] flex-wrap md:flex-nowrap justify-between gap-4 md:gap-6 lg:gap-10 text-xs md:text-sm lg:text-base">
             <div className="flex flex-col items-start min-w-[90px]">
               <p className="uppercase tracking-[0.22em] text-gray-500 text-[0.7rem] md:text-[0.72rem] lg:text-xs">Date</p>
-              <p className="mt-1 text-sm md:text-base lg:text-lg font-semibold">11 April 2026</p>
+              <p className="mt-1 text-sm md:text-base lg:text-lg font-semibold">25 April 2026</p>
             </div>
             <div className="flex flex-col items-start min-w-[120px]">
               <p className="uppercase tracking-[0.22em] text-gray-500 text-[0.7rem] md:text-[0.72rem] lg:text-xs">Venue</p>
