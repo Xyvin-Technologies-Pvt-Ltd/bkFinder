@@ -13,4 +13,5 @@ export const routes = createBrowserRouter([
   { path: "/card/:id", element: <CardPage /> },
   { path: "/terms", element: <TermsPage /> },
   { path: "/privacy", element: <PrivacyPage /> },
+
 ]);
