@@ -291,7 +291,7 @@ const EventCardsSection = () => {
         </div>
 
         {/* Footer Contact */}
-        <div className="mt-20 border-t border-slate-200 pt-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        <div className="mt-20 border-t border-slate-200 pt-10 flex flex-col items-center justify-center gap-6 text-center">
           <div>
             <h4 className="text-2xl font-bold text-slate-900 mb-1">Still have questions?</h4>
             <p className="text-slate-500 text-sm">Our support team is ready to assist you 24/7.</p>
