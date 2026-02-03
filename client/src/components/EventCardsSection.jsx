@@ -300,9 +300,6 @@ const EventCardsSection = () => {
             <a href="tel:+917511188200" className="px-6 py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-lg hover:shadow-xl">
               <Phone className="w-4 h-4" /> Call Us
             </a>
-            <a href="https://bkfinder.com" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-xl bg-white border border-slate-200 text-slate-900 font-bold hover:bg-slate-50 transition-colors flex items-center gap-2">
-              <Globe className="w-4 h-4" /> Website
-            </a>
           </div>
         </div>
       </div>
