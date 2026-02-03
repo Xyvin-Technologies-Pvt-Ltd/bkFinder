@@ -21,6 +21,8 @@ import xyvin_logo from "../logos/Xyvin_logo.png";
 import footerBannerDesktop from "../assets/website banner 2500 × 300-01.jpg";
 import footerBannerMobile from "../assets/mobile footer  banner 1080 × 400-01.png";
 import ImageCropper from "../components/ImageCropper";
+import EventCardsSection from "../components/EventCardsSection";
+import GuestCards from "../components/GuestCards";
 
 
 function Homepage() {
@@ -142,21 +144,45 @@ function Homepage() {
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Only allow 10 digits for phone field
+    if (name === 'phone') {
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+    
     // Clear error for that field while typing
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleStallChange = (e) => {
     const { name, value } = e.target;
-    setStallData((prev) => ({ ...prev, [name]: value }));
+    
+    // Only allow 10 digits for phone field
+    if (name === 'phone') {
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      setStallData((prev) => ({ ...prev, [name]: numericValue }));
+    } else {
+      setStallData((prev) => ({ ...prev, [name]: value }));
+    }
+    
     // clear error instantly on typing
     setErrorsStall((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleAwardChange = (e) => {
     const { name, value } = e.target;
-    setAwardData((prev) => ({ ...prev, [name]: value }));
+    
+    // Only allow 10 digits for phone field
+    if (name === 'phone') {
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      setAwardData((prev) => ({ ...prev, [name]: numericValue }));
+    } else {
+      setAwardData((prev) => ({ ...prev, [name]: value }));
+    }
+    
     setErrorsAward((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -305,7 +331,7 @@ function Homepage() {
     { name: "Brand 8", img: brand8 },
     { name: "Brand 9", img: brand9 },
     { name: "Brand 10", img: brand10 },
-   
+
   ];
 
   return (
@@ -382,7 +408,7 @@ function Homepage() {
               onClick={() => setShowBooking(true)}
               className="w-full md:w-auto px-6 md:px-8 lg:px-10 py-3 text-xs md:text-sm lg:text-base font-semibold tracking-[0.22em] uppercase rounded-full text-center bg-[#0f766e] text-white shadow-sm transform transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-500/40 hover:bg-[#0d5f59] active:scale-95 cursor-pointer"
             >
-              Book Your Ticket 
+              Book Your Ticket
             </button>
           </div>
 
@@ -403,9 +429,8 @@ function Homepage() {
 
       {/* Booking Type Chooser Popup - mobile only */}
       <section
-        className={`sm:hidden fixed inset-0 z-30 flex items-center justify-center px-4 transition-opacity duration-300 ease-out ${
-          showBookingChooser ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        className={`sm:hidden fixed inset-0 z-30 flex items-center justify-center px-4 transition-opacity duration-300 ease-out ${showBookingChooser ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
       >
         <div
           className="absolute inset-0 bg-black/50 transition-opacity duration-300"
@@ -413,9 +438,8 @@ function Homepage() {
         />
 
         <div
-          className={`relative w-full max-w-xl transform transition-transform duration-300 ease-out ${
-            showBookingChooser ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
-          }`}
+          className={`relative w-full max-w-xl transform transition-transform duration-300 ease-out ${showBookingChooser ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
+            }`}
         >
           <div className="relative rounded-3xl bg-white/95 backdrop-blur-md shadow-2xl px-6 sm:px-8 py-6 sm:py-8">
             {/* Close button for chooser */}
@@ -519,18 +543,16 @@ function Homepage() {
       {/* Booking Overlay */}
 
       <section
-        className={`fixed inset-0 z-20 flex items-center justify-center px-4 transition-opacity duration-300 ease-out ${
-          showBooking ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 z-20 flex items-center justify-center px-4 transition-opacity duration-300 ease-out ${showBooking ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
       >
         <div
           className="absolute inset-0 bg-black/40 transition-opacity duration-300"
           onClick={() => setShowBooking(false)}
         />
         <div
-          className={`relative w-full max-w-3xl transform transition-transform duration-300 ease-out ${
-            showBooking ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
-          }`}
+          className={`relative w-full max-w-3xl transform transition-transform duration-300 ease-out ${showBooking ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
+            }`}
         >
           <div className="relative flex flex-col items-center justify-start rounded-3xl bg-white/90 backdrop-blur-md shadow-2xl px-6 sm:px-10 py-6 sm:py-8">
             {/* Close button for forms */}
@@ -561,11 +583,10 @@ function Homepage() {
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 mb-4 sm:mb-6">
               <button
                 onClick={() => setActiveForm("event")}
-                className={`text-base sm:text-xl font-extrabold uppercase tracking-[0.18em] transition-all duration-300 ${
-                  activeForm === "event"
-                    ? "text-slate-900 translate-y-0 cursor-default"
-                    : "text-slate-400 cursor-pointer hover:-translate-y-0.5 hover:text-slate-900"
-                }`}
+                className={`text-base sm:text-xl font-extrabold uppercase tracking-[0.18em] transition-all duration-300 ${activeForm === "event"
+                  ? "text-slate-900 translate-y-0 cursor-default"
+                  : "text-slate-400 cursor-pointer hover:-translate-y-0.5 hover:text-slate-900"
+                  }`}
               >
                 Event
               </button>
@@ -576,11 +597,10 @@ function Homepage() {
 
               <button
                 onClick={() => setActiveForm("award")}
-                className={`text-base sm:text-xl font-extrabold uppercase tracking-[0.18em] transition-all duration-300 ${
-                  activeForm === "award"
-                    ? "text-slate-900 translate-y-0 cursor-default"
-                    : "text-slate-400 cursor-pointer hover:-translate-y-0.5 hover:text-slate-900"
-                }`}
+                className={`text-base sm:text-xl font-extrabold uppercase tracking-[0.18em] transition-all duration-300 ${activeForm === "award"
+                  ? "text-slate-900 translate-y-0 cursor-default"
+                  : "text-slate-400 cursor-pointer hover:-translate-y-0.5 hover:text-slate-900"
+                  }`}
               >
                 Business Award
               </button>
@@ -591,11 +611,10 @@ function Homepage() {
 
               <button
                 onClick={() => setActiveForm("stall")}
-                className={`text-base sm:text-xl font-extrabold uppercase tracking-[0.18em] transition-all duration-300 ${
-                  activeForm === "stall"
-                    ? "text-slate-900 translate-y-0 cursor-default"
-                    : "text-slate-400 cursor-pointer hover:-translate-y-0.5 hover:text-slate-900"
-                }`}
+                className={`text-base sm:text-xl font-extrabold uppercase tracking-[0.18em] transition-all duration-300 ${activeForm === "stall"
+                  ? "text-slate-900 translate-y-0 cursor-default"
+                  : "text-slate-400 cursor-pointer hover:-translate-y-0.5 hover:text-slate-900"
+                  }`}
               >
                 Stall
               </button>
@@ -648,7 +667,7 @@ function Homepage() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="+91 99999 88888"
+                      placeholder="Enter 10 digit mobile number"
                       className={`w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 
                 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base
                 ${errors.phone ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"}
@@ -780,7 +799,7 @@ function Homepage() {
                         name="phone"
                         value={stallData.phone}
                         onChange={handleStallChange}
-                        placeholder="+91 98765 43210"
+                        placeholder="Enter 10 digit mobile number"
                         className={`w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 
                 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base
                 ${errorsStall.phone ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"}
@@ -855,9 +874,8 @@ function Homepage() {
                         value={awardData.name}
                         onChange={handleAwardChange}
                         placeholder="John Mathew"
-                        className={`w-full border rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base ${
-                          errorsAward.name ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
-                        }`}
+                        className={`w-full border rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base ${errorsAward.name ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
+                          }`}
                       />
                     </div>
 
@@ -871,9 +889,8 @@ function Homepage() {
                         value={awardData.companyName}
                         onChange={handleAwardChange}
                         placeholder="Tech Innovations Pvt Ltd"
-                        className={`w-full border rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base ${
-                          errorsAward.companyName ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
-                        }`}
+                        className={`w-full border rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base ${errorsAward.companyName ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
+                          }`}
                       />
                     </div>
                   </div>
@@ -889,9 +906,8 @@ function Homepage() {
                         value={awardData.position}
                         onChange={handleAwardChange}
                         placeholder="Founder / CEO"
-                        className={`w-full border rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base ${
-                          errorsAward.position ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
-                        }`}
+                        className={`w-full border rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base ${errorsAward.position ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
+                          }`}
                       />
                     </div>
 
@@ -907,10 +923,9 @@ function Homepage() {
                         name="phone"
                         value={awardData.phone}
                         onChange={handleAwardChange}
-                        placeholder="91 98765 43210"
-                        className={`w-full border rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base ${
-                          errorsAward.phone ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
-                        }`}
+                        placeholder="Enter 10 digit mobile number"
+                        className={`w-full border rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base ${errorsAward.phone ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"
+                          }`}
                       />
                     </div>
                   </div>
@@ -934,7 +949,7 @@ function Homepage() {
         </div>
       </section>
 
-      
+
       {/* Key Event Highlights - white & green corporate theme */}
       <section ref={highlightsRef} className="relative py-16 sm:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
@@ -954,9 +969,8 @@ function Homepage() {
 
           {/* Cards grid - 3x2 layout */}
           <div
-            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 transition-opacity duration-700 ease-out ${
-              highlightsVisible ? "opacity-100" : "opacity-0 translate-y-4"
-            }`}
+            className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 transition-opacity duration-700 ease-out ${highlightsVisible ? "opacity-100" : "opacity-0 translate-y-4"
+              }`}
           >
             {/* Business Seminar */}
             <div
@@ -1057,6 +1071,9 @@ function Homepage() {
         </div>
       </section>
 
+      {/* Event Cards Section */}
+      <EventCardsSection />
+
       {/* Stats background section */}
       <section
         className="relative text-white py-16 sm:py-20 bg-cover bg-center bg-no-repeat"
@@ -1088,6 +1105,11 @@ function Homepage() {
           </div>
         </div>
       </section>
+
+      {/* Guest Cards Section */}
+      <GuestCards />
+
+
 
       {/* Featured Brands section */}
       <section className="bg-white flex flex-col items-center text-center py-12 sm:py-16">
@@ -1151,7 +1173,7 @@ function Homepage() {
               </a>
             </div>
           </div>
-          
+
 
           <div className="w-full my-3 sm:my-0">
             <div className="flex sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-500 text-xs sm:text-lg font-medium">

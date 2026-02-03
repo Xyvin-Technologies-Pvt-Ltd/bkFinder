@@ -17,6 +17,7 @@
     "heic2any": "^0.0.4",
     "html-to-image": "^1.11.13",
     "jspdf": "^3.0.4",
+    "lucide-react": "^0.563.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-easy-crop": "^5.5.3",
