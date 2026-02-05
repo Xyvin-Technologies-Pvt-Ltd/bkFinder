@@ -247,25 +247,6 @@ const EventCardsSection = () => {
         "Sharing of participation video",
         "Logo promotion across digital platforms"
       ]
-    },
-    {
-      title: "Brand Honoring",
-      subtitle: "Brand Award",
-      themeColor: "gold",
-      price: "25,000",
-      originalPrice: "30,000 + GST",
-      validity: "Until Feb 20, 2026",
-      highlights: [
-        "Brand Award Recognition on Stage",
-        "LED wall advertisement featuring brand video",
-        "Entry passes and food for 2 representatives",
-        "1-minute professional video podcast coverage",
-        "High-quality event photos and video highlights",
-        "Logo branding across Digital Business Community",
-        "Pre-event digital promotion",
-        "Sharing of participation video",
-        "Logo visibility across digital platforms"
-      ]
     }
   ];
 
