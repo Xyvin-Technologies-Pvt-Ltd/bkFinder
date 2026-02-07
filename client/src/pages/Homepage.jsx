@@ -10,7 +10,8 @@ import brand7 from "../logos/logo_07.png";
 import brand8 from "../logos/logo_08.png";
 import brand9 from "../logos/logo_09.png";
 import brand10 from "../logos/logo_10.png";
-
+import brand11 from "../logos/logo_11.png";
+import brand12 from "../logos/logo_12.png";
 import backgroundImg from "../assets/ChatGPT Image Jan 3, 2026, 12_56_48 PM.png";
 import backgroundImgMobile from "../assets/Award AD.jpg";
 
@@ -331,6 +332,9 @@ function Homepage() {
     { name: "Brand 8", img: brand8 },
     { name: "Brand 9", img: brand9 },
     { name: "Brand 10", img: brand10 },
+    { name: "Brand 11", img: brand11 },
+    { name: "Brand 12", img: brand12 },
+
 
   ];
 
