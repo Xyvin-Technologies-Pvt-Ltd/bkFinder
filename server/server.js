@@ -52,7 +52,7 @@ app.use("/api/stall", stallRouter);
 app.use("/api/card-pdf", cardPdfRouter);
 app.use("/api/card", require("./routes/cardImage"));
 app.use("/api/awards", awardRouter);
-app.use("/api/payment", require("./routes/paymentRoutes"));
+// app.use("/api/payment", require("./routes/paymentRoutes"));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`SERVER RUNNING → ${PORT}`));
