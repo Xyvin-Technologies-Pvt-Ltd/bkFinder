@@ -19,12 +19,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5000",
   "https://bkfinder.com",
   "https://www.bkfinder.com",
   "https://admin.bkfinder.com",
@@ -34,6 +31,15 @@ app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
+
+// Handle preflight requests explicitly
+app.options('*', cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/frame", express.static(path.join(__dirname, "public/frame")));
 
