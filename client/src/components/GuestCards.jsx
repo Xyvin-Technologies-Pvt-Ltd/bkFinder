@@ -19,7 +19,8 @@ import tonySajiImg from '../assets/guest/TONY SAJI.png';
 import kadalMachanImg from '../assets/guest/KADAL MACHAN.png';
 import mathewJosephImg from '../assets/guest/Mathew Joseph.png';
 import sandhyammaImg from '../assets/guest/sandhyamma.png';
-import nivedyaDiljit from '../assets/guest/Nivedya Deljith.jpg'
+import nivedyaDiljit from '../assets/guest/Nivedya Deljith.jpg';
+import Rashidka from '../assets/guest/RASHID KA AJMI.jpeg';
 const GuestCards = () => {
     const guests = [
         {
@@ -112,12 +113,16 @@ const GuestCards = () => {
             designation: "Social Media Influencer",
             image: sandhyammaImg,
         },
-         {
+        {
             name: "NIVEDYA DELJITH",
             designation: "IIT Hyderabad Graduate Lead Data Scientist @BOSH",
             image: nivedyaDiljit,
         },
-
+        {
+            name: "RASHID KA",
+            designation: "DIRECTOR OF AJMI FOODS",
+            image: Rashidka,
+        },
     ];
 
     return (
