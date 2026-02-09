@@ -33,15 +33,15 @@ const GuestCards = () => {
             designation: "Chairman of Kiltons Group, Chairman & Cofounder of IPA, Director of Hope Child Cancer Care",
             image: riyazKiltonImg,
         },
-        {
-            name: "Er. TPM. HASHIR ALI",
-            designation: "Senate Member, Calicut University Advisory Board Member, Calicut International Airport",
-            image: hashirAliImg,
+         {
+            name: "RASHID KA",
+            designation: "DIRECTOR OF AJMI FOODS",
+            image: Rashidka,
         },
-        {
-            name: "DR AYSHA RUBY",
-            designation: "CEO - Ruby Vesture Exports",
-            image: ayshaRubyImg,
+         {
+            name: "MATHEW JOSEPH",
+            designation: "COO & Co-Founder Fresh To Home",
+            image: mathewJosephImg,
         },
         {
             name: "A R RANJITH",
@@ -63,66 +63,75 @@ const GuestCards = () => {
             designation: "Founder - M/S Ashique & Associates, Company Secretary & Business Architect",
             image: ashiqueAmImg,
         },
+         {
+            name: "SUBILAL K",
+            designation: "Founder and CEO Integrated Business Automation Research Centre",
+            image: subilalImg,
+        },
+          
         {
             name: "DR SHAJAHAN ABOOBACKER",
             designation: "Corporate Trainer, Business Coach, Transformation Guru",
             image: shajahanImg,
         },
-        {
-            name: "SUBILAL K",
-            designation: "Founder and CEO Integrated Business Automation Research Centre",
-            image: subilalImg,
-        },
+         
         {
             name: "SILVAN MUSTHAFA",
             designation: "Corporate Trainer, Business Coach, Transformation Guru",
             image: silvanMusthafaImg,
         },
-        {
+
+         {
             name: "IBRAHIM SUBHAN",
             designation: "Founder and Chairman Skytalks",
             image: ibrahimSubhanImg,
         },
         {
+            name: "DR AYSHA RUBY",
+            designation: "CEO - Ruby Vesture Exports",
+            image: ayshaRubyImg,
+        },
+         {
+            name: "TONY SAJI",
+            designation: "Business Transformation Coach, Managing Director Stepx International Pvt Ltd",
+            image: tonySajiImg,
+        },
+        
+        {
             name: "EBADU RAHMAN",
             designation: "Business Influencer, Podcaster, Content Strategist",
             image: ebaduRahmanImg,
         },
+
+        {
+            name: "Er. TPM. HASHIR ALI",
+            designation: "Senate Member, Calicut University Advisory Board Member, Calicut International Airport",
+            image: hashirAliImg,
+        },
+         {
+            name: "NIVEDYA DELJITH",
+            designation: "IIT Hyderabad Graduate Lead Data Scientist @BOSH",
+            image: nivedyaDiljit,
+        },
+        
         {
             name: "ANFAL KV",
             designation: "Entrepreneur Safari Cars",
             image: anfalKvImg,
         },
-        {
-            name: "TONY SAJI",
-            designation: "Business Transformation Coach, Managing Director Stepx International Pvt Ltd",
-            image: tonySajiImg,
-        },
+       
         {
             name: "KADAL MACHAN",
             designation: "Social Media Influencer",
             image: kadalMachanImg,
         },
-        {
-            name: "MATHEW JOSEPH",
-            designation: "COO & Co-Founder Fresh To Home",
-            image: mathewJosephImg,
-        },
+       
         {
             name: "SANDHYAMMA",
             designation: "Social Media Influencer",
             image: sandhyammaImg,
         },
-        {
-            name: "NIVEDYA DELJITH",
-            designation: "IIT Hyderabad Graduate Lead Data Scientist @BOSH",
-            image: nivedyaDiljit,
-        },
-        {
-            name: "RASHID KA",
-            designation: "DIRECTOR OF AJMI FOODS",
-            image: Rashidka,
-        },
+             
     ];
 
     return (
