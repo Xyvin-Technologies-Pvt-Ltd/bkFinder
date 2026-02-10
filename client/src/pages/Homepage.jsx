@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { User, Phone, MapPin, CreditCard, ChevronDown, Check } from "lucide-react";
 
 import brand1 from "../logos/logo_01.png";
 import brand2 from "../logos/logo_02.png";
@@ -16,9 +15,8 @@ import brand12 from "../logos/logo_12.png";
 import backgroundImg from "../assets/ChatGPT Image Jan 3, 2026, 12_56_48 PM.png";
 import backgroundImgMobile from "../assets/Award AD.jpg";
 
-import { registerStall, registerUser, registerAward, createOrder, verifyPayment } from "../api/userApi";
+import { registerStall, registerUser, registerAward } from "../api/userApi";
 import { toast } from "sonner";
-import logo from "../logos/logo_01.png"; // Fallback logo for Razorpay
 import skybertech_logo from "../logos/skybertech_logo.png";
 import xyvin_logo from "../logos/Xyvin_logo.png";
 import footerBannerDesktop from "../assets/website banner 2500 × 300-01.jpg";
@@ -218,73 +216,42 @@ function Homepage() {
     e.preventDefault();
     if (!validateEventForm()) return;
     try {
-      // 1. Create Order
-      const orderRes = await createOrder({ amount: 999 }); // 999 INR
-      const { id: order_id, amount, currency } = orderRes.data;
+      const fd = new FormData();
 
-      // 2. Open Razorpay
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_S0VDDvQYxs2a5S", // Replace with env var if available
-        amount: amount,
-        currency: currency,
-        name: "IT & Business Kerala Conclave",
-        description: "Event Ticket Registration",
-        image: logo,
-        order_id: order_id,
-        handler: async function (response) {
-          try {
-            // 3. Verify Payment
-            const verifyRes = await verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            });
+      // Append all text fields
+      fd.append("name", formData.name);
+      fd.append("phone", formData.phone);
+      // fd.append("email", formData.email);
+      fd.append("place", formData.place);
+      // fd.append("cName", formData.cName);
+      // fd.append("cType", formData.cType);
 
-            if (verifyRes.status === 200) {
-              // 4. Register User on Success
-              const fd = new FormData();
-              fd.append("name", formData.name);
-              fd.append("phone", formData.phone);
-              fd.append("place", formData.place);
-              if (formData.photo) {
-                fd.append("photo", formData.photo);
-              }
-              // Add payment details if backend supports it, otherwise just register
-              // fd.append("paymentId", response.razorpay_payment_id);
+      // Append photo file
+      if (formData.photo) {
+        fd.append("photo", formData.photo);
+      }
 
-              const res = await registerUser(fd);
-              console.log(res.data);
-              toast.success("Payment & Registration successful!");
-              window.location.href = `/card/${res.data.userId}`;
+      const res = await registerUser(fd); // send FormData
+      console.log(res.data);
 
-              setFormData({
-                name: "",
-                phone: "",
-                place: "",
-                photo: null,
-              });
-              if (photoRef.current) photoRef.current.value = "";
-            }
-          } catch (err) {
-            console.error("Payment verification failed:", err);
-            toast.error("Payment verification failed");
-          }
-        },
-        prefill: {
-          name: formData.name,
-          contact: formData.phone,
-        },
-        theme: {
-          color: "#10b981", // Emerald 500
-        },
-      };
+      toast.success("Registration successful!");
 
-      const rzp1 = new window.Razorpay(options);
-      rzp1.open();
+      //redirect to card page
+      window.location.href = `/card/${res.data.userId}`;
 
+      // Reset fields
+      setFormData({
+        name: "",
+        phone: "",
+        place: "",
+        photo: null,
+      });
+      if (photoRef.current) {
+        photoRef.current.value = "";
+      }
     } catch (err) {
-      console.error("Error initiating payment:", err);
-      toast.error("Error initiating payment");
+      console.error("Error submitting form:", err);
+      toast.error("Error submitting form");
     }
   };
 
@@ -293,68 +260,25 @@ function Homepage() {
     e.preventDefault();
     if (!validateStallForm()) return;
     try {
-      // 1. Create Order
-      const orderRes = await createOrder({ amount: 15000 }); // 15000 INR
-      const { id: order_id, amount, currency } = orderRes.data;
+      const res = await registerStall(stallData);
+      console.log(res.data);
+      toast.success("Stall booking submitted!");
 
-      // 2. Open Razorpay
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_S0VDDvQYxs2a5S",
-        amount: amount,
-        currency: currency,
-        name: "IT & Business Kerala Conclave",
-        description: "Stall Booking",
-        image: logo,
-        order_id: order_id,
-        handler: async function (response) {
-          try {
-            // 3. Verify Payment
-            const verifyRes = await verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            });
+      if (res.data && res.data.userId) {
+        window.location.href = `/card/${res.data.userId}`;
+      }
 
-            if (verifyRes.status === 200) {
-              // 4. Register Stall
-              const res = await registerStall(stallData);
-              console.log(res.data);
-              toast.success("Payment & Stall booking submitted!");
-
-              if (res.data && res.data.userId) {
-                window.location.href = `/card/${res.data.userId}`;
-              }
-
-              setStallData({
-                name: "",
-                companyName: "",
-                position: "",
-                phone: "",
-                email: "",
-                place: "",
-              });
-            }
-          } catch (err) {
-            console.error(err);
-            toast.error("Payment verification failed");
-          }
-        },
-        prefill: {
-          name: stallData.name,
-          email: stallData.email,
-          contact: stallData.phone
-        },
-        theme: {
-          color: "#0ea5e9", // Sky 500
-        }
-      };
-
-      const rzp1 = new window.Razorpay(options);
-      rzp1.open();
-
+      setStallData({
+        name: "",
+        companyName: "",
+        position: "",
+        phone: "",
+        email: "",
+        place: "",
+      });
     } catch (err) {
       console.error(err);
-      toast.error("Failed to initiate payment");
+      toast.error("Failed to submit stall booking");
     }
   };
 
@@ -413,11 +337,6 @@ function Homepage() {
 
 
   ];
-
-  const handleCardClick = (type) => {
-    setActiveForm(type);
-    setShowBooking(true);
-  };
 
   return (
     <div className="w-full h-full overflow-x-hidden">
@@ -719,24 +638,6 @@ function Homepage() {
                     Fill in your details and reserve your seat at the IT & Business Kerala Conclave.
                     Our team will get in touch with you soon.
                   </p>
-                  <div className="mb-4">
-                    <p className="text-emerald-700 font-bold text-sm sm:text-base bg-emerald-50 py-2 rounded-lg inline-block px-4 border border-emerald-200 mb-2">
-                      Visitor Pass: ₹999/-
-                    </p>
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="font-normal text-slate-600 text-xs">(Tea, Snacks, Food included)</span>
-                      <a href="#participation-packages"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setShowBooking(false); // Close modal
-                          const element = document.getElementById('participation-packages');
-                          if (element) element.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                        className="text-[0.65rem] sm:text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">
-                        Know More
-                      </a>
-                    </div>
-                  </div>
                 </div>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
@@ -807,7 +708,7 @@ function Homepage() {
                 duration-700 ease-in-out opacity-0 group-hover:opacity-100" />
 
                       <span className="relative z-10 text-slate-900 font-semibold text-xs sm:text-sm tracking-wide">
-                        Pay & Register
+                        Register
                       </span>
                     </button>
                   </div>
@@ -832,9 +733,6 @@ function Homepage() {
                   <p className="text-slate-500 font-light mb-4 text-xs sm:text-sm max-w-lg mx-auto">
                     Fill in your details and reserve your stall at the IT & Business Kerala Conclave.
                     Our team will get in touch with you soon.
-                  </p>
-                  <p className="text-sky-700 font-bold text-sm sm:text-base mb-4 bg-sky-50 py-2 rounded-lg inline-block px-4 border border-sky-200">
-                    Stall Booking: ₹15,000/-
                   </p>
                 </div>
 
@@ -1178,7 +1076,7 @@ function Homepage() {
       </section>
 
       {/* Event Cards Section */}
-      <EventCardsSection onBook={handleCardClick} />
+      <EventCardsSection />
 
       {/* Stats background section */}
       <section

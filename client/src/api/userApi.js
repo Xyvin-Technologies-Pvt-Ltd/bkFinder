@@ -68,9 +68,4 @@ export const downloadCardPdf = (id) =>
   });
 
 
-
-// Payment
-export const createOrder = (data) => API.post("/api/payment/create-order", data);
-export const verifyPayment = (data) => API.post("/api/payment/verify-payment", data);
-
 export default API;

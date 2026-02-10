@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Check, Star, CreditCard, Phone, Globe, ChevronDown, ChevronUp, Copy, Percent } from 'lucide-react';
 import qrCodeImg from '../assets/IMG_2055.PNG';
 
-const EventCardsSection = ({ onBook }) => {
+const EventCardsSection = () => {
   // Reusable Component for individual cards
   const EventCard = ({ card }) => {
     const {
@@ -12,8 +12,7 @@ const EventCardsSection = ({ onBook }) => {
       originalPrice,
       validity,
       highlights,
-      themeColor,
-      bookingType
+      themeColor
     } = card;
 
     // Gradient definitions for borders and accents
@@ -59,10 +58,7 @@ const EventCardsSection = ({ onBook }) => {
     const theme = themes[themeColor] || themes.maroon;
 
     return (
-      <div
-        onClick={() => bookingType && onBook && onBook(bookingType)}
-        className={`group relative h-full flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 overflow-hidden ${bookingType ? 'cursor-pointer' : ''}`}
-      >
+      <div className="group relative h-full flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 overflow-hidden">
         {/* Top Gradient Line */}
         <div className={`h-2 w-full bg-gradient-to-r ${theme.gradient}`}></div>
 
@@ -170,7 +166,6 @@ const EventCardsSection = ({ onBook }) => {
       price: "999",
       originalPrice: "1499 + GST",
       validity: "Until Feb 20, 2026",
-      bookingType: "event",
       highlights: [
         "Entry pass for one person",
         "Business Networking opportunity",
@@ -185,7 +180,6 @@ const EventCardsSection = ({ onBook }) => {
       price: "15,000",
       originalPrice: "20,000 + GST",
       validity: "Until Feb 20, 2026",
-      bookingType: "stall",
       highlights: [
         "LED wall advertisement for your brand video",
         "Participation certificate",
