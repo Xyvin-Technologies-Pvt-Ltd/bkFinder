@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Check, Star, CreditCard, Phone, Globe, ChevronDown, ChevronUp, Copy, Percent } from 'lucide-react';
 import qrCodeImg from '../assets/IMG_2055.PNG';
 
-const EventCardsSection = () => {
+const EventCardsSection = ({ onBookNow }) => {
   // Reusable Component for individual cards
   const EventCard = ({ card }) => {
     const {
@@ -12,7 +12,8 @@ const EventCardsSection = () => {
       originalPrice,
       validity,
       highlights,
-      themeColor
+      themeColor,
+      actionType
     } = card;
 
     // Gradient definitions for borders and accents
@@ -58,7 +59,10 @@ const EventCardsSection = () => {
     const theme = themes[themeColor] || themes.maroon;
 
     return (
-      <div className="group relative h-full flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 overflow-hidden">
+      <div
+        onClick={() => actionType && onBookNow && onBookNow(actionType)}
+        className={`group relative h-full flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 overflow-hidden ${actionType ? 'cursor-pointer' : ''}`}
+      >
         {/* Top Gradient Line */}
         <div className={`h-2 w-full bg-gradient-to-r ${theme.gradient}`}></div>
 
@@ -147,9 +151,15 @@ const EventCardsSection = () => {
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-2 py-1 rounded-full">
-                  Scan & Pay
-                </span>
+                {actionType ? (
+                  <span className="text-[10px] font-bold text-white uppercase tracking-wider bg-emerald-600 px-3 py-1.5 rounded-full shadow-md animate-pulse">
+                    Click to Book
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-2 py-1 rounded-full">
+                    Scan & Pay
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -166,6 +176,7 @@ const EventCardsSection = () => {
       price: "999",
       originalPrice: "1499 + GST",
       validity: "Until Feb 20, 2026",
+      actionType: "event",
       highlights: [
         "Entry pass for one person",
         "Business Networking opportunity",
@@ -180,6 +191,7 @@ const EventCardsSection = () => {
       price: "15,000",
       originalPrice: "20,000 + GST",
       validity: "Until Feb 20, 2026",
+      actionType: "stall",
       highlights: [
         "LED wall advertisement for your brand video",
         "Participation certificate",

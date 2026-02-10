@@ -2,7 +2,8 @@ import axios from "axios";
 import useLoadingStore from "../store/loadingStore";
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL
+  baseURL: "http://localhost:5000", // Hardcoded for debugging
+  withCredentials: true, // Ensure cookies/headers are sent
 });
 
 
@@ -67,5 +68,10 @@ export const downloadCardPdf = (id) =>
     responseType: "blob",
   });
 
+
+// Create Razorpay Order
+export const createRazorpayOrder = (amount) => {
+  return API.post("/api/payment/order", { amount });
+};
 
 export default API;
