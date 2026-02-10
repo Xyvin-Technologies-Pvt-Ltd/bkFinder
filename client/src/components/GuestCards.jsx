@@ -21,6 +21,12 @@ import mathewJosephImg from '../assets/guest/Mathew Joseph.png';
 import sandhyammaImg from '../assets/guest/sandhyamma.png';
 import nivedyaDiljit from '../assets/guest/Nivedya Deljith.jpg';
 import Rashidka from '../assets/guest/RASHID KA AJMI.jpeg';
+import InshadNazim from '../assets/guest/InshadNazim.jpeg';
+import Rauljhon from '../assets/guest/rauljhon.jpeg';
+import fasalurahnman from '../assets/guest/fasalu rahman.jpeg';
+import padmakumar from '../assets/guest/padmakumar.jpeg';
+import sureshkumar from '../assets/guest/sureshkumar.jpeg';
+import Govindan from '../assets/guest/K Govindan.jpeg';
 const GuestCards = () => {
     const guests = [
         {
@@ -33,15 +39,20 @@ const GuestCards = () => {
             designation: "Chairman of Kiltons Group, Chairman & Cofounder of IPA, Director of Hope Child Cancer Care",
             image: riyazKiltonImg,
         },
-         {
+        {
             name: "RASHID KA",
             designation: "DIRECTOR OF AJMI FOODS",
             image: Rashidka,
         },
-         {
+        {
             name: "MATHEW JOSEPH",
             designation: "COO & Co-Founder Fresh To Home",
             image: mathewJosephImg,
+        },
+        {
+            name: "Er. TPM. HASHIR ALI",
+            designation: "Senate Member, Calicut University Advisory Board Member, Calicut International Airport",
+            image: hashirAliImg,
         },
         {
             name: "A R RANJITH",
@@ -63,25 +74,25 @@ const GuestCards = () => {
             designation: "Founder - M/S Ashique & Associates, Company Secretary & Business Architect",
             image: ashiqueAmImg,
         },
-         {
+        {
             name: "SUBILAL K",
             designation: "Founder and CEO Integrated Business Automation Research Centre",
             image: subilalImg,
         },
-          
+
         {
             name: "DR SHAJAHAN ABOOBACKER",
             designation: "Corporate Trainer, Business Coach, Transformation Guru",
             image: shajahanImg,
         },
-         
+
         {
             name: "SILVAN MUSTHAFA",
             designation: "Corporate Trainer, Business Coach, Transformation Guru",
             image: silvanMusthafaImg,
         },
 
-         {
+        {
             name: "IBRAHIM SUBHAN",
             designation: "Founder and Chairman Skytalks",
             image: ibrahimSubhanImg,
@@ -91,12 +102,12 @@ const GuestCards = () => {
             designation: "CEO - Ruby Vesture Exports",
             image: ayshaRubyImg,
         },
-         {
+        {
             name: "TONY SAJI",
             designation: "Business Transformation Coach, Managing Director Stepx International Pvt Ltd",
             image: tonySajiImg,
         },
-        
+
         {
             name: "EBADU RAHMAN",
             designation: "Business Influencer, Podcaster, Content Strategist",
@@ -104,34 +115,60 @@ const GuestCards = () => {
         },
 
         {
-            name: "Er. TPM. HASHIR ALI",
-            designation: "Senate Member, Calicut University Advisory Board Member, Calicut International Airport",
-            image: hashirAliImg,
+            name: "RAUL JHON AJU",
+            designation: "AI ENTHUSIAST,INNOVATOR/EDUCATOR,6X TEDX SPEAKER ",
+            image: Rauljhon,
         },
-         {
+
+        {
             name: "NIVEDYA DELJITH",
             designation: "IIT Hyderabad Graduate Lead Data Scientist @BOSH",
             image: nivedyaDiljit,
         },
-        
+
+        {
+            name: "INSHAD NAZIM",
+            designation: "CMD MOVIE WORLD  VISUAL MEDIA PVT LTD",
+            image: InshadNazim,
+        },
+
+        {
+            name: "FASALU RAHMAN",
+            designation: "FOUNDER BAYT HOME4 BUILDERS",
+            image: fasalurahnman,
+        },
+        {
+            name: "PADMAKUMAR N",
+            designation: "CHEIF OPERATING OFFICER KCCL & KVBL.KCCL-KERALA COMMUNICATORS CABLE LTD.KVBL-KERALAVISION BROAD BAND LTD",
+            image: padmakumar,
+        },
+        {
+            name: "SURESHKUMAR PP",
+            designation: "MANAGING DIRECTOR KCCL & KVBL",
+            image: sureshkumar,
+        },
+        {
+            name: "K GOVINDAN",
+            designation: "CHAIRMAN KCCL & KVBL",
+            image: Govindan,
+        },
         {
             name: "ANFAL KV",
             designation: "Entrepreneur Safari Cars",
             image: anfalKvImg,
         },
-       
         {
             name: "KADAL MACHAN",
             designation: "Social Media Influencer",
             image: kadalMachanImg,
         },
-       
+
         {
             name: "SANDHYAMMA",
             designation: "Social Media Influencer",
             image: sandhyammaImg,
         },
-             
+
     ];
 
     return (
