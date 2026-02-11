@@ -180,7 +180,7 @@ const EventCardsSection = ({ onBookNow }) => {
       highlights: [
         "Entry pass for one person",
         "Business Networking opportunity",
-        "Welcome Drink, Lunch, Dinner, Tea snacks",
+        "Welcome Drink, Lunch, Tea snacks",
         "Business Stall Access"
       ]
     },
