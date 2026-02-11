@@ -68,6 +68,10 @@ export const downloadCardPdf = (id) =>
     responseType: "blob",
   });
 
+// Get Razorpay Public Key
+export const getRazorpayKey = () => {
+  return API.get("/api/payment/key");
+};
 
 // Create Razorpay Order
 export const createRazorpayOrder = (amount) => {

@@ -15,7 +15,7 @@ import brand12 from "../logos/logo_12.png";
 import backgroundImg from "../assets/ChatGPT Image Jan 3, 2026, 12_56_48 PM.png";
 import backgroundImgMobile from "../assets/Award AD.jpg";
 
-import { registerStall, registerUser, registerAward, createRazorpayOrder } from "../api/userApi";
+import { registerStall, registerUser, registerAward, createRazorpayOrder, getRazorpayKey } from "../api/userApi";
 import { toast } from "sonner";
 import skybertech_logo from "../logos/skybertech_logo.png";
 import xyvin_logo from "../logos/Xyvin_logo.png";
@@ -230,11 +230,13 @@ function Homepage() {
     }
 
     try {
+      const { data: keyRes } = await getRazorpayKey();
+
       // 1. Create Order
       const { data: order } = await createRazorpayOrder(amount);
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
+        key: keyRes.keyId, // Enter the Key ID generated from the Dashboard
         amount: order.amount,
         currency: order.currency,
         name: "Business Kerala",

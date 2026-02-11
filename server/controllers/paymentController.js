@@ -71,4 +71,12 @@ const createOrder = async (req, res) => {
     }
 };
 
-module.exports = { createOrder };
+const getPublicKey = (req, res) => {
+    const keyId = process.env.RAZORPAY_KEY_ID;
+    if (!keyId) {
+        return res.status(500).json({ message: "RAZORPAY_KEY_ID is not configured" });
+    }
+    return res.status(200).json({ keyId });
+};
+
+module.exports = { createOrder, getPublicKey };
