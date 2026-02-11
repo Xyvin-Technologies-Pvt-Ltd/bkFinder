@@ -272,8 +272,8 @@ function Homepage() {
     e.preventDefault();
     if (!validateEventForm()) return;
 
-    // Trigger Payment first (Visitor Pass = 999)
-    await handleRazorpayPayment(999, async (paymentResponse) => {
+    // Trigger Payment first (Visitor Pass = 1)
+    await handleRazorpayPayment(1, async (paymentResponse) => {
       try {
         const fd = new FormData();
         fd.append("name", formData.name);
@@ -306,8 +306,8 @@ function Homepage() {
     e.preventDefault();
     if (!validateStallForm()) return;
 
-    // Trigger Payment (Stall = 15000)
-    await handleRazorpayPayment(15000, async (paymentResponse) => {
+    // Trigger Payment (Stall = 1)
+    await handleRazorpayPayment(1, async (paymentResponse) => {
       try {
         const payload = {
           ...stallData,
