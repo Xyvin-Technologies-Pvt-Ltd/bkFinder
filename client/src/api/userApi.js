@@ -2,10 +2,9 @@ import axios from "axios";
 import useLoadingStore from "../store/loadingStore";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000", // Hardcoded for debugging
+  baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:5000",
   withCredentials: true, // Ensure cookies/headers are sent
 });
-
 
 // Request Interceptor
 API.interceptors.request.use((config) => {
