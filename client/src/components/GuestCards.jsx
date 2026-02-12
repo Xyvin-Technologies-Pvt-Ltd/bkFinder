@@ -26,10 +26,9 @@ import Rauljhon from '../assets/guest/rauljhon.jpeg';
 import fasalurahnman from '../assets/guest/fasalu rahman.jpeg';
 import padmakumar from '../assets/guest/padmakumar.jpeg';
 import sureshkumar from '../assets/guest/sureshkumar.jpeg';
-import Govindan from '../assets/guest/K Govindan.jpeg';
 import vishnu from '../assets/guest/vishnu rg.jpeg';
 import farhan from '../assets/guest/farhan akthar.jpeg';
-
+import Govindan from '../assets/guest/k Govindan.jpeg';
 const GuestCards = () => {
     const guests = [
         {
