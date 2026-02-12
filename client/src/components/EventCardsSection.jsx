@@ -81,6 +81,7 @@ const EventCardsSection = ({ onBookNow }) => {
         </div>
 
         {/* Pricing */}
+        {price && (
         <div className="px-6 pb-6 text-center border-b border-slate-100">
           {originalPrice && (
             <div className="text-slate-400 line-through text-lg font-medium relative inline-block mb-1">
@@ -99,6 +100,7 @@ const EventCardsSection = ({ onBookNow }) => {
             </div>
           )}
         </div>
+        )}
 
         {/* Highlights */}
         <div className="p-6 flex-grow bg-slate-50/50">
@@ -115,6 +117,7 @@ const EventCardsSection = ({ onBookNow }) => {
         </div>
 
         {/* Payment Section */}
+        {price && (
         <div className="mt-auto bg-white border-t border-slate-100 p-5 relative overflow-hidden">
           {/* Subtle decorative background circle */}
           <div className={`absolute -right-6 -bottom-6 w-24 h-24 rounded-full ${theme.bgSoft} opacity-50`}></div>
@@ -164,6 +167,7 @@ const EventCardsSection = ({ onBookNow }) => {
             </div>
           </div>
         </div>
+        )}
       </div>
     );
   };
@@ -209,7 +213,6 @@ const EventCardsSection = ({ onBookNow }) => {
       title: "Business Presentation",
       subtitle: "Presentation Duration 10 Minutes",
       themeColor: "purple",
-      price: "25,000",
       highlights: [
         "10-minute business presentation slot",
         "LED wall display for your brand presentation video",
@@ -226,9 +229,6 @@ const EventCardsSection = ({ onBookNow }) => {
       title: "Product Launch",
       subtitle: "Early Bird Offer",
       themeColor: "blue",
-      price: "25,000",
-      originalPrice: "30,000 + GST",
-      validity: "Until Feb 20, 2026",
       highlights: [
         "LED wall promotion featuring your product/brand video",
         "Official on-stage product launch at the conclave",
@@ -245,7 +245,6 @@ const EventCardsSection = ({ onBookNow }) => {
       title: "Panel Discussion",
       subtitle: "Session Duration 30 Minutes",
       themeColor: "burgundy",
-      price: "50,000",
       highlights: [
         "LED wall promotion featuring your brand video",
         "Opportunity to participate in an expert-led panel discussion",
