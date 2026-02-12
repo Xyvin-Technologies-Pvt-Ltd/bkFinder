@@ -2,9 +2,9 @@ import axios from "axios";
 import useLoadingStore from "../store/loadingStore";
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL
+  baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:5000",
+  withCredentials: true, // Ensure cookies/headers are sent
 });
-
 
 // Request Interceptor
 API.interceptors.request.use((config) => {
@@ -67,5 +67,14 @@ export const downloadCardPdf = (id) =>
     responseType: "blob",
   });
 
+// Get Razorpay Public Key
+export const getRazorpayKey = () => {
+  return API.get("/api/payment/key");
+};
+
+// Create Razorpay Order
+export const createRazorpayOrder = (amount) => {
+  return API.post("/api/payment/order", { amount });
+};
 
 export default API;

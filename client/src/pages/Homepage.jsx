@@ -13,9 +13,9 @@ import brand10 from "../logos/logo_10.png";
 import brand11 from "../logos/logo_11.png";
 import brand12 from "../logos/logo_12.png";
 import backgroundImg from "../assets/ChatGPT Image Jan 3, 2026, 12_56_48 PM.png";
-import backgroundImgMobile from "../assets/Award AD.jpg";
+import backgroundImgMobile from "../assets/mobile.jpg.jpeg";
 
-import { registerStall, registerUser, registerAward } from "../api/userApi";
+import { registerStall, registerUser, registerAward, createRazorpayOrder, getRazorpayKey } from "../api/userApi";
 import { toast } from "sonner";
 import skybertech_logo from "../logos/skybertech_logo.png";
 import xyvin_logo from "../logos/Xyvin_logo.png";
@@ -145,7 +145,7 @@ function Homepage() {
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Only allow 10 digits for phone field
     if (name === 'phone') {
       const numericValue = value.replace(/\D/g, '').slice(0, 10);
@@ -153,14 +153,14 @@ function Homepage() {
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-    
+
     // Clear error for that field while typing
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleStallChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Only allow 10 digits for phone field
     if (name === 'phone') {
       const numericValue = value.replace(/\D/g, '').slice(0, 10);
@@ -168,14 +168,14 @@ function Homepage() {
     } else {
       setStallData((prev) => ({ ...prev, [name]: value }));
     }
-    
+
     // clear error instantly on typing
     setErrorsStall((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleAwardChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Only allow 10 digits for phone field
     if (name === 'phone') {
       const numericValue = value.replace(/\D/g, '').slice(0, 10);
@@ -183,7 +183,7 @@ function Homepage() {
     } else {
       setAwardData((prev) => ({ ...prev, [name]: value }));
     }
-    
+
     setErrorsAward((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -211,75 +211,127 @@ function Homepage() {
     };
   }, []);
 
+  // Load Razorpay Script
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleRazorpayPayment = async (amount, onSuccess) => {
+    const res = await loadRazorpay();
+    if (!res) {
+      toast.error("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+    try {
+      const { data: keyRes } = await getRazorpayKey();
+
+      // 1. Create Order
+      const { data: order } = await createRazorpayOrder(amount);
+
+      const options = {
+        key: keyRes.keyId, // Enter the Key ID generated from the Dashboard
+        amount: order.amount,
+        currency: order.currency,
+        name: "Business Kerala",
+        description: "Event Registration",
+        image: "https://bkfinder.com/logo-2026.jpeg", // Optional logo
+        order_id: order.id,
+        handler: async function (response) {
+          // 2. On Success, call the actual registration
+          // console.log("Payment Success:", response);
+          onSuccess(response);
+        },
+        prefill: {
+          name: formData.name || stallData.name,
+          contact: formData.phone || stallData.phone,
+          email: formData.email || stallData.email,
+        },
+        theme: {
+          color: "#0f766e",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+
+    } catch (error) {
+      console.error("Payment Error:", error);
+      toast.error("Could not initiate payment. Server error.");
+    }
+  };
+
   // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateEventForm()) return;
-    try {
-      const fd = new FormData();
 
-      // Append all text fields
-      fd.append("name", formData.name);
-      fd.append("phone", formData.phone);
-      // fd.append("email", formData.email);
-      fd.append("place", formData.place);
-      // fd.append("cName", formData.cName);
-      // fd.append("cType", formData.cType);
+    // Trigger Payment first (Visitor Pass = 999)
+    await handleRazorpayPayment(999, async (paymentResponse) => {
+      try {
+        const fd = new FormData();
+        fd.append("name", formData.name);
+        fd.append("phone", formData.phone);
+        fd.append("place", formData.place);
+        if (formData.photo) fd.append("photo", formData.photo);
 
-      // Append photo file
-      if (formData.photo) {
-        fd.append("photo", formData.photo);
+        // Append payment details if backend needs them
+        fd.append("razorpay_payment_id", paymentResponse.razorpay_payment_id);
+        fd.append("razorpay_order_id", paymentResponse.razorpay_order_id);
+        fd.append("razorpay_signature", paymentResponse.razorpay_signature);
+
+        const res = await registerUser(fd);
+        console.log(res.data);
+        toast.success("Payment & Registration successful!");
+        window.location.href = `/card/${res.data.userId}`;
+
+        setFormData({ name: "", phone: "", place: "", photo: null });
+        if (photoRef.current) photoRef.current.value = "";
+
+      } catch (err) {
+        console.error("Error submitting form:", err);
+        toast.error("Registration failed after payment. Contact support.");
       }
-
-      const res = await registerUser(fd); // send FormData
-      console.log(res.data);
-
-      toast.success("Registration successful!");
-
-      //redirect to card page
-      window.location.href = `/card/${res.data.userId}`;
-
-      // Reset fields
-      setFormData({
-        name: "",
-        phone: "",
-        place: "",
-        photo: null,
-      });
-      if (photoRef.current) {
-        photoRef.current.value = "";
-      }
-    } catch (err) {
-      console.error("Error submitting form:", err);
-      toast.error("Error submitting form");
-    }
+    });
   };
 
 
   const handleStallSubmit = async (e) => {
     e.preventDefault();
     if (!validateStallForm()) return;
-    try {
-      const res = await registerStall(stallData);
-      console.log(res.data);
-      toast.success("Stall booking submitted!");
 
-      if (res.data && res.data.userId) {
-        window.location.href = `/card/${res.data.userId}`;
+    // Trigger Payment (Stall = 15000)
+    await handleRazorpayPayment(15000, async (paymentResponse) => {
+      try {
+        const payload = {
+          ...stallData,
+          paymentId: paymentResponse.razorpay_payment_id,
+          orderId: paymentResponse.razorpay_order_id,
+          signature: paymentResponse.razorpay_signature
+        };
+
+        const res = await registerStall(payload);
+        console.log(res.data);
+        toast.success("Stall booked successfully!");
+
+        if (res.data && res.data.userId) {
+          window.location.href = `/card/${res.data.userId}`;
+        }
+
+        setStallData({
+          name: "", companyName: "", position: "", phone: "", email: "", place: "",
+        });
+      } catch (err) {
+        console.error(err);
+        toast.error("Stall booking failed after payment.");
       }
-
-      setStallData({
-        name: "",
-        companyName: "",
-        position: "",
-        phone: "",
-        email: "",
-        place: "",
-      });
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to submit stall booking");
-    }
+    });
   };
 
   const handleAwardSubmit = async (e) => {
@@ -288,7 +340,7 @@ function Homepage() {
       toast.error("Please fill all required fields in the award form correctly.");
       return;
     }
-
+    // Award nomination might not need payment? User didn't specify. Leaving as is for now.
     try {
       const payload = {
         ...awardData,
@@ -305,15 +357,7 @@ function Homepage() {
       }
 
       setAwardData({
-        name: "",
-        companyName: "",
-        position: "",
-        phone: "",
-        email: "",
-        place: "",
-        category: "",
-        yearsInBusiness: "",
-        reason: "",
+        name: "", companyName: "", position: "", phone: "", email: "", place: "", category: "", yearsInBusiness: "", reason: "",
       });
     } catch (err) {
       console.error(err);
@@ -638,6 +682,30 @@ function Homepage() {
                     Fill in your details and reserve your seat at the IT & Business Kerala Conclave.
                     Our team will get in touch with you soon.
                   </p>
+
+                  <div className="mb-6 flex flex-col items-center justify-center space-y-2">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-5 py-2 shadow-sm">
+                      <p className="text-emerald-700 font-bold text-base sm:text-lg tracking-wide uppercase">
+                        Visitor Pass: ₹999/-
+                      </p>
+                    </div>
+                    <p className="text-slate-500 text-[10px] sm:text-xs font-medium">
+                      (Tea, Snacks, Food included)
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowBooking(false);
+                        const section = document.getElementById("participation-packages");
+                        if (section) {
+                          section.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }}
+                      className="text-blue-600 hover:text-blue-800 text-xs font-semibold underline underline-offset-4 cursor-pointer transition-colors"
+                    >
+                      Know More
+                    </button>
+                  </div>
                 </div>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
@@ -708,7 +776,7 @@ function Homepage() {
                 duration-700 ease-in-out opacity-0 group-hover:opacity-100" />
 
                       <span className="relative z-10 text-slate-900 font-semibold text-xs sm:text-sm tracking-wide">
-                        Register
+                        Pay & Register
                       </span>
                     </button>
                   </div>
@@ -734,6 +802,14 @@ function Homepage() {
                     Fill in your details and reserve your stall at the IT & Business Kerala Conclave.
                     Our team will get in touch with you soon.
                   </p>
+
+                  <div className="mb-6 flex justify-center">
+                    <div className="bg-sky-50 border border-sky-200 rounded-lg px-5 py-2 shadow-sm">
+                      <p className="text-sky-700 font-bold text-base sm:text-lg tracking-wide uppercase">
+                        Stall Booking: ₹15,000/-
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 <form className="space-y-6" onSubmit={handleStallSubmit}>
@@ -1076,7 +1152,11 @@ function Homepage() {
       </section>
 
       {/* Event Cards Section */}
-      <EventCardsSection />
+      {/* Event Cards Section */}
+      <EventCardsSection onBookNow={(type) => {
+        setActiveForm(type);
+        setShowBooking(true);
+      }} />
 
       {/* Stats background section */}
       <section

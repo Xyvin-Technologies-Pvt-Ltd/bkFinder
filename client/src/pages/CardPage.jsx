@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 export default function CardPage() {
   const { id } = useParams();
 
-  const imageUrl = `${import.meta.env.VITE_BASE_URL}/api/card/image/${id}`;
+  const baseUrl = import.meta.env.VITE_BASE_URL || "";
+  const imageUrl = `${baseUrl}/api/card/image/${id}`;
 
   const downloadImage = async () => {
     const res = await fetch(imageUrl);

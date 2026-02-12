@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Check, Star, CreditCard, Phone, Globe, ChevronDown, ChevronUp, Copy, Percent } from 'lucide-react';
 import qrCodeImg from '../assets/IMG_2055.PNG';
 
-const EventCardsSection = () => {
+const EventCardsSection = ({ onBookNow }) => {
   // Reusable Component for individual cards
   const EventCard = ({ card }) => {
     const {
@@ -12,7 +12,8 @@ const EventCardsSection = () => {
       originalPrice,
       validity,
       highlights,
-      themeColor
+      themeColor,
+      actionType
     } = card;
 
     // Gradient definitions for borders and accents
@@ -58,7 +59,10 @@ const EventCardsSection = () => {
     const theme = themes[themeColor] || themes.maroon;
 
     return (
-      <div className="group relative h-full flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 overflow-hidden">
+      <div
+        onClick={() => actionType && onBookNow && onBookNow(actionType)}
+        className={`group relative h-full flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 overflow-hidden ${actionType ? 'cursor-pointer' : ''}`}
+      >
         {/* Top Gradient Line */}
         <div className={`h-2 w-full bg-gradient-to-r ${theme.gradient}`}></div>
 
@@ -77,6 +81,7 @@ const EventCardsSection = () => {
         </div>
 
         {/* Pricing */}
+        {price && (
         <div className="px-6 pb-6 text-center border-b border-slate-100">
           {originalPrice && (
             <div className="text-slate-400 line-through text-lg font-medium relative inline-block mb-1">
@@ -95,6 +100,7 @@ const EventCardsSection = () => {
             </div>
           )}
         </div>
+        )}
 
         {/* Highlights */}
         <div className="p-6 flex-grow bg-slate-50/50">
@@ -111,6 +117,7 @@ const EventCardsSection = () => {
         </div>
 
         {/* Payment Section */}
+        {price && (
         <div className="mt-auto bg-white border-t border-slate-100 p-5 relative overflow-hidden">
           {/* Subtle decorative background circle */}
           <div className={`absolute -right-6 -bottom-6 w-24 h-24 rounded-full ${theme.bgSoft} opacity-50`}></div>
@@ -147,13 +154,20 @@ const EventCardsSection = () => {
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-2 py-1 rounded-full">
-                  Scan & Pay
-                </span>
+                {actionType ? (
+                  <span className="text-[10px] font-bold text-white uppercase tracking-wider bg-emerald-600 px-3 py-1.5 rounded-full shadow-md animate-pulse">
+                    Click to Book
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-2 py-1 rounded-full">
+                    Scan & Pay
+                  </span>
+                )}
               </div>
             </div>
           </div>
         </div>
+        )}
       </div>
     );
   };
@@ -166,10 +180,11 @@ const EventCardsSection = () => {
       price: "999",
       originalPrice: "1499 + GST",
       validity: "Until Feb 20, 2026",
+      actionType: "event",
       highlights: [
         "Entry pass for one person",
         "Business Networking opportunity",
-        "Welcome Drink, Lunch, Dinner, Tea snacks",
+        "Welcome Drink, Lunch, Tea snacks",
         "Business Stall Access"
       ]
     },
@@ -180,6 +195,7 @@ const EventCardsSection = () => {
       price: "15,000",
       originalPrice: "20,000 + GST",
       validity: "Until Feb 20, 2026",
+      actionType: "stall",
       highlights: [
         "LED wall advertisement for your brand video",
         "Participation certificate",
@@ -197,7 +213,6 @@ const EventCardsSection = () => {
       title: "Business Presentation",
       subtitle: "Presentation Duration 10 Minutes",
       themeColor: "purple",
-      price: "25,000",
       highlights: [
         "10-minute business presentation slot",
         "LED wall display for your brand presentation video",
@@ -214,9 +229,6 @@ const EventCardsSection = () => {
       title: "Product Launch",
       subtitle: "Early Bird Offer",
       themeColor: "blue",
-      price: "25,000",
-      originalPrice: "30,000 + GST",
-      validity: "Until Feb 20, 2026",
       highlights: [
         "LED wall promotion featuring your product/brand video",
         "Official on-stage product launch at the conclave",
@@ -233,7 +245,6 @@ const EventCardsSection = () => {
       title: "Panel Discussion",
       subtitle: "Session Duration 30 Minutes",
       themeColor: "burgundy",
-      price: "50,000",
       highlights: [
         "LED wall promotion featuring your brand video",
         "Opportunity to participate in an expert-led panel discussion",
