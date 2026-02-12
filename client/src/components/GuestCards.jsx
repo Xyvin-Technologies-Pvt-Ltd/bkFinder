@@ -27,6 +27,9 @@ import fasalurahnman from '../assets/guest/fasalu rahman.jpeg';
 import padmakumar from '../assets/guest/padmakumar.jpeg';
 import sureshkumar from '../assets/guest/sureshkumar.jpeg';
 import Govindan from '../assets/guest/K Govindan.jpeg';
+import vishnu from '../assets/guest/vishnu rg.jpeg';
+import farhan from '../assets/guest/farhan akthar.jpeg';
+
 const GuestCards = () => {
     const guests = [
         {
@@ -167,6 +170,17 @@ const GuestCards = () => {
             name: "SANDHYAMMA",
             designation: "Social Media Influencer",
             image: sandhyammaImg,
+        },
+        {
+            name: "VISHNU RG",
+            designation: "EXECUTIVE DIRECTOR RG FOODS",
+            image: vishnu,
+        },
+
+        {
+            name: "FARHAN AKTHAR",
+            designation: "PERSONAL BRANDING STRATEGIEST",
+            image: farhan,
         },
 
     ];
