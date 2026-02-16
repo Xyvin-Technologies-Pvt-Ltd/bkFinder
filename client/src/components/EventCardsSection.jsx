@@ -208,56 +208,6 @@ const EventCardsSection = ({ onBookNow }) => {
         "Logo promotion across digital platforms",
         "Entry passes and food for 2 persons"
       ]
-    },
-    {
-      title: "Business Presentation",
-      subtitle: "Presentation Duration 10 Minutes",
-      themeColor: "purple",
-      highlights: [
-        "10-minute business presentation slot",
-        "LED wall display for your brand presentation video",
-        "Entry passes and food for 2 representatives",
-        "1-minute professional video podcast coverage",
-        "Event photography and videography",
-        "Logo visibility across the Digital Business Community",
-        "Pre-event digital promotion",
-        "Sharing of participation video",
-        "Logo promotion across digital platforms"
-      ]
-    },
-    {
-      title: "Product Launch",
-      subtitle: "Early Bird Offer",
-      themeColor: "blue",
-      highlights: [
-        "LED wall promotion featuring your product/brand video",
-        "Official on-stage product launch at the conclave",
-        "Entry passes and food for 2 representatives",
-        "1-minute professional video podcast coverage",
-        "Event photography and videography",
-        "Logo visibility across the Digital Business Community",
-        "Pre-event digital promotion",
-        "Sharing of product launch participation video",
-        "Logo promotion across digital platforms"
-      ]
-    },
-    {
-      title: "Panel Discussion",
-      subtitle: "Session Duration 30 Minutes",
-      themeColor: "burgundy",
-      highlights: [
-        "LED wall promotion featuring your brand video",
-        "Opportunity to participate in an expert-led panel discussion",
-        "Entry passes and food for 2 representatives",
-        "1-minute professional video podcast coverage",
-        "Honoring",
-        "One-page magazine feature in this event",
-        "Event photography and videography",
-        "Logo visibility across the Digital Business Community",
-        "Pre-event digital promotion",
-        "Sharing of participation video",
-        "Logo promotion across digital platforms"
-      ]
     }
   ];
 
@@ -276,7 +226,7 @@ const EventCardsSection = ({ onBookNow }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-w-4xl mx-auto">
           {eventPackages.map((pkg, index) => (
             <EventCard key={index} card={pkg} />
           ))}
