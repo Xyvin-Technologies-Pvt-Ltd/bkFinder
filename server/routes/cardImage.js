@@ -140,7 +140,7 @@ router.get("/image/:id", async (req, res) => {
 
     /* POSITION: horizontally centered; used as reference for text + QR */
     const boxX = (WIDTH - boxWidth) / 2;
-    const boxY = 560;
+    const boxY = 480;
 
     /* DRAW NAME / PLACE / BADGE (black text, stacked) */
     ctx.fillStyle = "#000000";
@@ -191,9 +191,9 @@ router.get("/image/:id", async (req, res) => {
     /* QR - centered below the name, slightly larger */
     if (user.qr) {
       const qr = await loadImageFromUrl(user.qr);
-      const qrSize = 300;
+      const qrSize = 270;
       const qrX = (WIDTH - qrSize) / 2;
-      const qrY = boxY + boxHeight + 20;
+      const qrY = boxY + boxHeight;
       ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
     }
 
