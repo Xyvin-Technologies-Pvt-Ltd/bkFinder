@@ -13,7 +13,7 @@ import brand10 from "../logos/logo_10.png";
 import brand11 from "../logos/logo_11.png";
 import brand12 from "../logos/logo_12.png";
 import backgroundImg from "../assets/ChatGPT Image Jan 3, 2026, 12_56_48 PM.png";
-import backgroundImgMobile from "../assets/newmobile.jpeg";
+import backgroundImgMobile from "../assets/mobile.jpeg";
 
 import { registerStall, registerUser, registerAward, createRazorpayOrder, getRazorpayKey } from "../api/userApi";
 import { toast } from "sonner";

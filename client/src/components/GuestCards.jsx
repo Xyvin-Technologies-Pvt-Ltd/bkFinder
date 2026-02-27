@@ -29,6 +29,10 @@ import sureshkumar from '../assets/guest/sureshkumar.jpeg';
 import vishnu from '../assets/guest/vishnu rg.jpeg';
 import farhan from '../assets/guest/farhan akthar.jpeg';
 import Govindan from '../assets/guest/k Govindan.jpeg';
+
+import nishadTaImg from '../assets/guest/Nishad T A.png';
+import shibiliRahimanKpImg from '../assets/guest/Shibili Rahiman KP.png';
+import sukeshGovindanImg from '../assets/guest/SUKESH GOVINDAN.png';
 const GuestCards = () => {
     const guests = [
         {
@@ -73,12 +77,12 @@ const GuestCards = () => {
         },
         {
             name: "CS. ASHIQUE AM, BBA, FCS, BM (IIMK)",
-            designation: "Founder - M/S Ashique & Associates, Company Secretary & Business Architect",
+            designation: "FOUNDER & CEO - M/S ASHIQUE & ASSOCIATES COMPANY SECRETARIES & BUSINESS ARCHITECT OFFICE: CALICUT, MMBAI, DELHI & DUBAI",
             image: ashiqueAmImg,
         },
         {
             name: "SUBILAL K",
-            designation: "Founder and CEO Integrated Business Automation Research Centre",
+            designation: "FOUNDER & CEO Integrated Business Automation Research Centre",
             image: subilalImg,
         },
 
@@ -90,7 +94,7 @@ const GuestCards = () => {
 
         {
             name: "SILVAN MUSTHAFA",
-            designation: "Corporate Trainer, Business Coach, Transformation Guru",
+            designation: "FOUNDER & MANAGING DIRECTOR OF SILVAN BUSINESS GROUP",
             image: silvanMusthafaImg,
         },
 
@@ -180,6 +184,22 @@ const GuestCards = () => {
             name: "FARHAN AKTHAR",
             designation: "PERSONAL BRANDING STRATEGIEST",
             image: farhan,
+        },
+
+        {
+            name: "NISHAD T A",
+            designation: "MANAGING DIRECTOR OF JUSPAID",
+            image: nishadTaImg,
+        },
+        {
+            name: "SHIBILI RAHIMAN KP",
+            designation: "FOUNDER & CHAIRMAN OF ROYAL ASSETS & COMPANIES",
+            image: shibiliRahimanKpImg,
+        },
+        {
+            name: "SUKESH GOVINDAN",
+            designation: "CEO-TENX PROPERTIES TENX SOFTWARE FOUNDATIONS",
+            image: sukeshGovindanImg,
         },
 
     ];
