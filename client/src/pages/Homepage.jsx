@@ -1,17 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import brand1 from "../logos/logo_01.png";
-import brand2 from "../logos/logo_02.png";
-import brand3 from "../logos/logo_03.png";
-import brand4 from "../logos/logo_04.png";
-import brand5 from "../logos/logo_05.png";
-import brand6 from "../logos/logo_06.png";
-import brand7 from "../logos/logo_07.png";
-import brand8 from "../logos/logo_08.png";
-import brand9 from "../logos/logo_09.png";
-import brand10 from "../logos/logo_10.png";
-import brand11 from "../logos/logo_11.png";
-import brand12 from "../logos/logo_12.png";
 import backgroundImg from "../assets/ChatGPT Image Jan 3, 2026, 12_56_48 PM.png";
 import backgroundImgMobile from "../assets/mobile.jpeg";
 
@@ -24,6 +12,7 @@ import footerBannerMobile from "../assets/mobile footer  banner 1080 × 400-01.p
 import ImageCropper from "../components/ImageCropper";
 import EventCardsSection from "../components/EventCardsSection";
 import GuestCards from "../components/GuestCards";
+import BrandPartners from "../components/brandpartners";
 
 
 function Homepage() {
@@ -364,23 +353,6 @@ function Homepage() {
       toast.error("Failed to submit award nomination");
     }
   };
-
-  const logos = [
-    { name: "Main Brand", img: brand1 }, // main associate partner
-    { name: "Brand 2", img: brand2 },
-    { name: "Brand 3", img: brand3 },
-    { name: "Brand 4", img: brand4 },
-    { name: "Brand 5", img: brand5 },
-    { name: "Brand 6", img: brand6 },
-    { name: "Brand 7", img: brand7 },
-    { name: "Brand 8", img: brand8 },
-    { name: "Brand 9", img: brand9 },
-    { name: "Brand 10", img: brand10 },
-    { name: "Brand 11", img: brand11 },
-    { name: "Brand 12", img: brand12 },
-
-
-  ];
 
   return (
     <div className="w-full h-full overflow-x-hidden">
@@ -1193,38 +1165,7 @@ function Homepage() {
       {/* Guest Cards Section */}
       <GuestCards />
 
-
-
-      {/* Featured Brands section */}
-      <section className="bg-white flex flex-col items-center text-center py-12 sm:py-16">
-        {/* Top content */}
-        <div className="flex flex-col justify-center items-center w-full">
-          <h2 className="text-3xl sm:text-5xl font-bold text-gray-900 mb-2 uppercase tracking-tight">
-            Featured Brands
-          </h2>
-          <p className="text-gray-600 mb-6 sm:mb-10 text-base sm:text-lg max-w-2xl">
-            Discover the leading brands and partners joining our event
-          </p>
-
-          {/* Logos grid */}
-          <div className="w-full max-w-6xl px-6 sm:px-8">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5 sm:gap-8 items-start justify-items-center">
-              {logos.map((logo, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center justify-start h-24 sm:h-32 w-24 sm:w-32"
-                >
-                  <img
-                    src={logo.img}
-                    alt={logo.name}
-                    className="max-h-full max-w-full object-contain grayscale-0 sm:grayscale sm:hover:grayscale-0 hover:scale-105 transition-all duration-500 ease-in-out"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <BrandPartners />
 
       {/* Footer section with partners */}
       <section className="bg-white flex flex-col items-center text-center">
