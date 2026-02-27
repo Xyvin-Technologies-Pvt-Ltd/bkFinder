@@ -77,7 +77,7 @@ const GuestCards = () => {
         },
         {
             name: "CS. ASHIQUE AM, BBA, FCS, BM (IIMK)",
-            designation: "FOUNDER & CEO - M/S ASHIQUE & ASSOCIATES COMPANY SECRETARIES & BUSINESS ARCHITECT OFFICE: CALICUT, MMBAI, DELHI & DUBAI",
+            designation: "FOUNDER & CEO - M/S ASHIQUE & ASSOCIATES COMPANY SECRETARIES & BUSINESS ARCHITECT OFFICE: CALICUT, MUMBAI, DELHI & DUBAI",
             image: ashiqueAmImg,
         },
         {
