@@ -83,9 +83,9 @@ function BrandPartners() {
             key={index}
             className={`flex items-center justify-center ${
               isTitleSponsor 
-                ? 'h-24 w-48 sm:h-28 sm:w-56 md:h-36 md:w-64 lg:h-40 lg:w-72'
+                ? 'h-20 w-32 sm:h-28 sm:w-48 md:h-36 md:w-64 lg:h-40 lg:w-72'
                 : isCoSponsor
-                ? 'h-20 w-40 sm:h-24 sm:w-48 md:h-28 md:w-52 lg:h-32 lg:w-56'
+                ? 'h-12 w-20 sm:h-24 sm:w-48 md:h-28 md:w-52 lg:h-32 lg:w-56'
                 : isAssociate
                 ? 'h-10 w-20 sm:h-14 sm:w-24 md:h-16 md:w-28 lg:h-20 lg:w-32'
                 : 'h-12 w-24 sm:h-16 sm:w-28 md:h-20 md:w-32 lg:h-24 lg:w-36'
@@ -102,12 +102,12 @@ function BrandPartners() {
     </div>
   );
 
-  const PartnerTile = ({ title, img, alt }) => (
+const PartnerTile = ({ title, img, alt }) => (
     <div className="flex flex-col items-center text-center gap-3 sm:gap-4 md:gap-6">
-      <div className="inline-flex items-center justify-center px-3 py-1 sm:px-4 sm:py-2 md:px-5 md:py-2 rounded-full bg-slate-900 text-white font-extrabold uppercase tracking-widest text-[9px] sm:text-[11px] md:text-xs shadow-md">
+      <div className="inline-flex items-center justify-center px-2 py-1 sm:px-3 sm:py-1 md:px-4 md:py-2 rounded-full bg-slate-900 text-white font-extrabold uppercase tracking-widest text-[8px] sm:text-[9px] md:text-[10px] shadow-md whitespace-nowrap">
         {title}
       </div>
-      <div className="flex items-center justify-center h-18 w-36 sm:h-22 sm:w-40 md:h-26 md:w-44 lg:h-30 lg:w-48">
+      <div className="flex items-center justify-center h-14 w-28 sm:h-18 sm:w-32 md:h-22 md:w-36 lg:h-26 lg:w-40">
         <img src={img} alt={alt} className="max-h-full max-w-full object-contain" />
       </div>
     </div>
@@ -120,17 +120,17 @@ function BrandPartners() {
       <div className="w-full">
         <div className={`flex justify-center ${
           isCoSponsor ? 'mb-4 sm:mb-5 md:mb-6' : 
-          isAssociate ? 'mb-3 sm:mb-4 md:mb-5' :
+          isAssociate ? 'mb-2 sm:mb-3 md:mb-4' :
           'mb-6 sm:mb-8 md:mb-10'
         }`}>
           <div
             className={`inline-flex items-center justify-center ${
               isCoSponsor ? 'px-4 py-1 sm:px-5 sm:py-2 md:px-6 md:py-3' : 
-              isAssociate ? 'px-3 py-1 sm:px-4 sm:py-2 md:px-5 md:py-2' :
+              isAssociate ? 'px-2 py-1 sm:px-3 sm:py-1 md:px-4 md:py-2' :
               'px-6 py-2 sm:px-8 sm:py-3 md:px-10 md:py-4'
             } rounded-full text-white font-black uppercase tracking-widest ${
               isCoSponsor ? 'text-xs sm:text-sm md:text-base' : 
-              isAssociate ? 'text-[9px] sm:text-[11px] md:text-xs' :
+              isAssociate ? 'text-[7px] sm:text-[8px] md:text-[9px]' :
               'text-sm sm:text-base md:text-lg lg:text-xl'
             } shadow-lg bg-gradient-to-r ${gradient}`}
           >
@@ -159,7 +159,7 @@ function BrandPartners() {
 
           <div className="w-full">
             <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12 place-items-center">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10 lg:gap-12 place-items-center">
                 <PartnerTile
                   title="Digital Marketing Partner"
                   img={alkoreLogo}
@@ -170,11 +170,13 @@ function BrandPartners() {
                   img={skybertechTransparentLogo}
                   alt="Technology Partner"
                 />
-                <PartnerTile
-                  title="Communication Partner"
-                  img={voxbayLogo}
-                  alt="Communication Partner"
-                />
+                <div className="col-span-2 sm:col-span-2 md:col-span-1 flex justify-center">
+                  <PartnerTile
+                    title="Communication Partner"
+                    img={voxbayLogo}
+                    alt="Communication Partner"
+                  />
+                </div>
               </div>
             </div>
           </div>
