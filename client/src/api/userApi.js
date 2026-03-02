@@ -77,4 +77,17 @@ export const createRazorpayOrder = (amount) => {
   return API.post("/api/payment/order", { amount });
 };
 
+// Admin manual user creation endpoints
+export const adminRegisterUser = (data) => {
+  return API.post("/api/admin/users/register", data);
+};
+
+export const adminRegisterStall = (data) => {
+  return API.post("/api/admin/stall/register", data);
+};
+
+export const adminCreateAward = (data) => {
+  return API.post("/api/admin/awards/create", data);
+};
+
 export default API;

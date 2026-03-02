@@ -4,6 +4,7 @@ import { saveAs } from "file-saver";
 import { getStalls, getUsers, getAwards } from "../api/userApi";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "sonner";
+import AdminUserCreation from "../components/AdminUserCreation";
 
 function ViewExcel() {
   const [data, setData] = useState([]);
@@ -13,6 +14,7 @@ function ViewExcel() {
   const [activeTab, setActiveTab] = useState("event");
   const [stallData, setStallData] = useState([]);
   const [awardData, setAwardData] = useState([]);
+  const [showAddUser, setShowAddUser] = useState(false);
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn");
@@ -60,6 +62,21 @@ function ViewExcel() {
   };
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((p) => p - 1);
+  };
+
+  // Refresh data after successful user creation
+  const refreshData = () => {
+    getUsers()
+      .then((res) => setData(res.data || []))
+      .catch(() => setData([]));
+    
+    getStalls()
+      .then((res) => setStallData(res.data || []))
+      .catch(() => setStallData([]));
+    
+    getAwards()
+      .then((res) => setAwardData(res.data || []))
+      .catch(() => setAwardData([]));
   };
 
   // Download Excel
@@ -186,11 +203,20 @@ function ViewExcel() {
 
         </div>
       </div>
-      <div className="w-full max-w-7xl">
-        <h1 className="text-2xl sm:text-3xl font-bold mt-6 mb-2 text-center sm:text-left">
-          Registered Users
-        </h1>
-
+      <div className="w-full max-w-7xl mx-auto">
+        {/* Header with Add User button */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Registered Users</h1>
+          <button
+            onClick={() => setShowAddUser(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2 text-sm font-medium"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add User
+          </button>
+        </div>
         <p className="text-sm sm:text-base text-gray-600 mb-4 text-center sm:text-left">
           Total Registered:
           <span className="font-semibold">
@@ -200,7 +226,6 @@ function ViewExcel() {
                 ? stallData.length
                 : awardData.length}
           </span>
-
         </p>
 
         {/* Table*/}
@@ -423,6 +448,15 @@ function ViewExcel() {
           </button>
         </div>
       </div>
+
+      {/* Admin User Creation Modal */}
+      {showAddUser && (
+        <AdminUserCreation
+          onClose={() => setShowAddUser(false)}
+          onSuccess={refreshData}
+          activeTab={activeTab}
+        />
+      )}
 
     </div>
   );

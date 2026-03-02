@@ -15,6 +15,7 @@ const stallRouter = require('./routes/stallRoutes');
 const path = require('path');
 const cardPdfRouter = require("./routes/cardPdf");
 const awardRouter = require("./routes/awardRoutes");
+const adminRouter = require('./routes/adminRoutes');
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use("/api/card-pdf", cardPdfRouter);
 app.use("/api/card", require("./routes/cardImage"));
 app.use("/api/awards", awardRouter);
 app.use("/api/payment", require("./routes/paymentRoutes"));
+app.use("/api/admin", adminRouter);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`SERVER RUNNING → ${PORT}`));
