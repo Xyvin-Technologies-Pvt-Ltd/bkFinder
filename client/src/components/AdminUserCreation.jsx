@@ -100,11 +100,11 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
 
     try {
       const response = await adminCreateAward(awardData);
-      toast.success("Award nomination created successfully!");
+      toast.success("Award nomination submitted successfully!");
       onSuccess();
       onClose();
     } catch (error) {
-      toast.error(error.response?.data?.error || "Failed to create award nomination");
+      toast.error(error.response?.data?.error || "Failed to submit award nomination");
     }
   };
 

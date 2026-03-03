@@ -23,7 +23,13 @@ function ViewExcel() {
 
   useEffect(() => {
     getUsers()
-      .then((res) => setData(res.data || []))
+      .then((res) => {
+        // Filter only event bookings (visitor registrations)
+        const eventBookings = (res.data || []).filter(user => 
+          user.registrationType === "visitor" || !user.registrationType
+        );
+        setData(eventBookings);
+      })
       .catch((err) => {
         console.error("Fetch error:", err);
         setData([]);
@@ -67,7 +73,13 @@ function ViewExcel() {
   // Refresh data after successful user creation
   const refreshData = () => {
     getUsers()
-      .then((res) => setData(res.data || []))
+      .then((res) => {
+        // Filter only event bookings (visitor registrations)
+        const eventBookings = (res.data || []).filter(user => 
+          user.registrationType === "visitor" || !user.registrationType
+        );
+        setData(eventBookings);
+      })
       .catch(() => setData([]));
     
     getStalls()
@@ -259,7 +271,7 @@ function ViewExcel() {
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Company Name</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Card</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Position</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Registered At</th>
                 </tr>
               )}
@@ -325,20 +337,7 @@ function ViewExcel() {
                         <td className="px-4 py-3 text-sm text-gray-800">{user.name}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.phone}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.companyName}</td>
-                        <td className="px-4 py-3 text-sm">
-                          {user.userId ? (
-                            <a
-                              href={`/card/${user.userId}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline hover:text-blue-800"
-                            >
-                              View Card
-                            </a>
-                          ) : (
-                            <span className="text-gray-400 text-xs">No card</span>
-                          )}
-                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.position}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">
                           {user.createdAt ? new Date(user.createdAt).toLocaleString() : "-"}
                         </td>
