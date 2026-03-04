@@ -41,6 +41,27 @@ const stallBookingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    // Payment tracking fields
+    paymentStatus: {
+      type: String,
+      enum: ["paid", "admin_created", "unpaid"],
+      default: "admin_created"
+    },
+    paymentId: {
+      type: String,
+      default: "",
+    },
+    orderId: {
+      type: String,
+      default: "",
+    },
+    paymentAmount: {
+      type: Number,
+      default: 0,
+    },
+    paymentDate: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

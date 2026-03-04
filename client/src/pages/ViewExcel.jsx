@@ -10,11 +10,12 @@ function ViewExcel() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 20;
-  const navigate = useNavigate();
+  const [showAddUser, setShowAddUser] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("event");
   const [stallData, setStallData] = useState([]);
   const [awardData, setAwardData] = useState([]);
-  const [showAddUser, setShowAddUser] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn");
@@ -57,17 +58,35 @@ function ViewExcel() {
   // Pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const dataToShow =
-    activeTab === "event" ? data : activeTab === "stall" ? stallData : awardData;
+  
+  // Filter data based on search term
+  const filteredData = (activeTab === "event" ? data : activeTab === "stall" ? stallData : awardData)
+    .filter(user => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        user.name?.toLowerCase().includes(searchLower) ||
+        user.phone?.toLowerCase().includes(searchLower) ||
+        user.place?.toLowerCase().includes(searchLower) ||
+        user.companyName?.toLowerCase().includes(searchLower) ||
+        user.position?.toLowerCase().includes(searchLower)
+      );
+    })
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by date descending
 
-  const currentUsers = dataToShow.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.max(1, Math.ceil(dataToShow.length / usersPerPage));
+  const currentUsers = filteredData.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / usersPerPage));
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage((p) => p + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
   const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage((p) => p - 1);
+    if (currentPage > 1) {
+      setCurrentPage((p) => p - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   // Refresh data after successful user creation
@@ -216,29 +235,59 @@ function ViewExcel() {
         </div>
       </div>
       <div className="w-full max-w-7xl mx-auto">
-        {/* Header with Add User button */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Registered Users</h1>
-          <button
-            onClick={() => setShowAddUser(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2 text-sm font-medium"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Add User
-          </button>
+        {/* Header with Add User button and Search */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Registered Users</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-sm sm:text-base text-gray-600">
+                Total Registered:
+                <span className="font-semibold">
+                  {activeTab === "event"
+                    ? data.length
+                    : activeTab === "stall"
+                      ? stallData.length
+                      : awardData.length}
+                </span>
+                {searchTerm && (
+                  <span className="ml-2 text-blue-600">
+                    (Found: {filteredData.length})
+                  </span>
+                )}
+              </p>
+              <button
+                onClick={refreshData}
+                className="p-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                title="Refresh data"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              placeholder="Search by name, phone, place..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1); // Reset to first page when searching
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+            />
+            <button
+              onClick={() => setShowAddUser(true)}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2 text-sm font-medium"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Add User
+            </button>
+          </div>
         </div>
-        <p className="text-sm sm:text-base text-gray-600 mb-4 text-center sm:text-left">
-          Total Registered:
-          <span className="font-semibold">
-            {activeTab === "event"
-              ? data.length
-              : activeTab === "stall"
-                ? stallData.length
-                : awardData.length}
-          </span>
-        </p>
 
         {/* Table*/}
         <div className="hidden sm:block overflow-x-auto bg-white rounded-lg shadow">
@@ -249,6 +298,7 @@ function ViewExcel() {
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Place</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Payment Status</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Card</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Registered At</th>
                 </tr>
@@ -287,6 +337,22 @@ function ViewExcel() {
                         <td className="px-4 py-3 text-sm text-gray-800">{user.name}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.phone}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.place}</td>
+                        <td className="px-4 py-3 text-sm">
+                          {user.paymentStatus === "paid" ? (
+                            <div>
+                              <span className="text-green-600 font-medium">Paid</span>
+                              {user.paymentId && (
+                                <div className="text-xs text-gray-500">ID: {user.paymentId}</div>
+                              )}
+                            </div>
+                          ) : user.paymentStatus === "unpaid" ? (
+                            <span className="text-red-600 font-medium">Unpaid</span>
+                          ) : user.paymentStatus === "admin_created" ? (
+                            <span className="text-orange-600 font-medium">Created by Admin</span>
+                          ) : (
+                            <span className="text-gray-600 font-medium">Unknown</span>
+                          )}
+                        </td>
                         <td className="px-4 py-3">
                           <a
                             href={`/card/${user._id}`}
@@ -311,6 +377,22 @@ function ViewExcel() {
                         <td className="px-4 py-3 text-sm text-gray-800">{user.place}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.companyName}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.position}</td>
+                        <td className="px-4 py-3 text-sm">
+                          {user.paymentStatus === "paid" ? (
+                            <div>
+                              <span className="text-green-600 font-medium">Paid</span>
+                              {user.paymentId && (
+                                <div className="text-xs text-gray-500">ID: {user.paymentId}</div>
+                              )}
+                            </div>
+                          ) : user.paymentStatus === "unpaid" ? (
+                            <span className="text-red-600 font-medium">Unpaid</span>
+                          ) : user.paymentStatus === "admin_created" ? (
+                            <span className="text-orange-600 font-medium">Created by Admin</span>
+                          ) : (
+                            <span className="text-gray-600 font-medium">Unknown</span>
+                          )}
+                        </td>
                         <td className="px-4 py-3 text-sm">
                           {user.userId ? (
                             <a
@@ -408,7 +490,7 @@ function ViewExcel() {
         </div>
 
         {/* Pagination, Actions */}
-        <div className="fixed bottom-1 left-0 w-full py-3 flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
+        <div className="mt-8 py-3 flex flex-col sm:flex-row items-center justify-center gap-4 px-4 bg-white border-t border-gray-200">
 
           <div className="flex items-center gap-3">
             <button

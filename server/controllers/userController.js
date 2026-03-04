@@ -12,7 +12,7 @@ const CLIENT_URL = "https://bkfinder.com";
 // Add a new user
 const addUser = async (req, res) => {
   try {
-    const { name, phone, place} = req.body;
+    const { name, phone, place, razorpay_payment_id, razorpay_order_id, razorpay_signature} = req.body;
 
     let photoUrl = "";
     if (req.file) {
@@ -36,12 +36,20 @@ const addUser = async (req, res) => {
 
     console.log("helllooo", req.file)
 
+    // Determine payment status and details
+    const isPaid = razorpay_payment_id && razorpay_order_id;
+    
     const newUser = new User({
       name,
       phone,
       place,
       photo: photoUrl,
       registrationType: "visitor",
+      paymentStatus: isPaid ? "paid" : "admin_created",
+      paymentId: razorpay_payment_id || "",
+      orderId: razorpay_order_id || "",
+      paymentAmount: isPaid ? 999 : 0,
+      paymentDate: isPaid ? new Date() : null,
     });
 
     const cardUrl = `${CLIENT_URL}/card/${newUser._id}`;

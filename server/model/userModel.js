@@ -44,8 +44,29 @@ const userSchema = new mongoose.Schema({
 cardUrl:{
   type: String,
   default: "",
+},
+// Payment tracking fields
+paymentStatus: {
+  type: String,
+  enum: ["paid", "admin_created", "unpaid"],
+  default: "admin_created"
+},
+paymentId: {
+  type: String,
+  default: "",
+},
+orderId: {
+  type: String,
+  default: "",
+},
+paymentAmount: {
+  type: Number,
+  default: 0,
+},
+paymentDate: {
+  type: Date,
 }
-  
+
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);

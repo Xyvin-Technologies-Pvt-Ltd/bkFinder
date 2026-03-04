@@ -7,8 +7,11 @@ const CLIENT_URL = "https://bkfinder.com";
 // Add a new stall booking
 const addStall = async (req, res) => {
   try {
-    const { name, companyName, position, phone, email, place } = req.body;
+    const { name, companyName, position, phone, email, place, paymentId, orderId, signature } = req.body;
 
+    // Determine payment status and details
+    const isPaid = paymentId && orderId;
+    
     const newStall = new Stall({
       name,
       companyName,
@@ -17,6 +20,11 @@ const addStall = async (req, res) => {
       email,
       place,
       registeredAt: new Date(),
+      paymentStatus: isPaid ? "paid" : "admin_created",
+      paymentId: paymentId || "",
+      orderId: orderId || "",
+      paymentAmount: isPaid ? 15000 : 0,
+      paymentDate: isPaid ? new Date() : null,
     });
 
     await newStall.save();
@@ -27,6 +35,11 @@ const addStall = async (req, res) => {
       place,
       cName: companyName,
       registrationType: "stall",
+      paymentStatus: isPaid ? "paid" : "admin_created",
+      paymentId: paymentId || "",
+      orderId: orderId || "",
+      paymentAmount: isPaid ? 15000 : 0,
+      paymentDate: isPaid ? new Date() : null,
     });
 
     const cardUrl = `${CLIENT_URL}/card/${newUser._id}`;
