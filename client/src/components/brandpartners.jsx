@@ -41,6 +41,8 @@ import guinnessRasheedLogo from "../assets/partners/guinness rasheed mission mil
 import enteBusinessLogo from "../assets/partners/ENTE BUSINESS .png";
 import eventhexLogo from "../assets/partners/Eventhex.png";
 import businessMalayaliLogo from "../assets/partners/Business Malayali logo copy 7.png";
+import sinaiSparkLogo from "../assets/partners/sinai spark.png";
+import detailingAcademyLogo from "../assets/partners/Detailing academy.in.png";
 
 function BrandPartners() {
   const titleSponsors = [
@@ -54,6 +56,7 @@ function BrandPartners() {
     { name: "Co-Sponsor", img: home4Logo },
     { name: "Co-Sponsor", img: racLogo },
     { name: "Co-Sponsor", img: tenXPropLogo },
+    { name: "Co-Sponsor", img: sinaiSparkLogo },
   ];
 
   const associates = [
@@ -73,6 +76,7 @@ function BrandPartners() {
     { name: "Associated Organisation & Brand Partner", img: enteBusinessLogo },
     { name: "Associated Organisation & Brand Partner", img: eventhexLogo },
     { name: "Associated Organisation & Brand Partner", img: businessMalayaliLogo },
+    { name: "Associated Organisation & Brand Partner", img: detailingAcademyLogo },
   ];
 
   const LogosGrid = ({ items, isTitleSponsor = false, isCoSponsor = false, isAssociate = false }) => (
@@ -85,7 +89,7 @@ function BrandPartners() {
               isTitleSponsor 
                 ? 'h-20 w-32 sm:h-28 sm:w-48 md:h-36 md:w-64 lg:h-40 lg:w-72'
                 : isCoSponsor
-                ? 'h-12 w-20 sm:h-24 sm:w-48 md:h-28 md:w-52 lg:h-32 lg:w-56'
+                ? 'h-12 w-24 sm:h-16 sm:w-32 md:h-20 md:w-40 lg:h-24 lg:w-48'
                 : isAssociate
                 ? 'h-10 w-20 sm:h-14 sm:w-24 md:h-16 md:w-28 lg:h-20 lg:w-32'
                 : 'h-12 w-24 sm:h-16 sm:w-28 md:h-20 md:w-32 lg:h-24 lg:w-36'
