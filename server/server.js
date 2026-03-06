@@ -10,6 +10,7 @@ const express = require('express');
 const cors = require('cors');
 const dbConnection = require('./config/dbconnect');
 const router = require('./routes/userRoutes');
+const groupRoutes = require("./routes/groupRoutes");
 const authRouter = require('./routes/authRoutes');
 const stallRouter = require('./routes/stallRoutes');
 const path = require('path');
@@ -49,6 +50,7 @@ app.use("/frame", express.static(path.join(__dirname, "public/frame")));
 dbConnection();
 
 app.use("/api/users", router);
+app.use("/api/users", groupRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/stall", stallRouter);
 app.use("/api/card-pdf", cardPdfRouter);

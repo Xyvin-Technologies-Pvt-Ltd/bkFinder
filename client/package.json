@@ -17,6 +17,7 @@
     "heic2any": "^0.0.4",
     "html-to-image": "^1.11.13",
     "jspdf": "^3.0.4",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.563.0",
     "razorpay": "^2.9.6",
     "react": "^19.1.1",

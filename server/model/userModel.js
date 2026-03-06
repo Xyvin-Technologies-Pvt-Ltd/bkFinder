@@ -45,6 +45,15 @@ cardUrl:{
   type: String,
   default: "",
 },
+  groupId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "GroupBooking",
+    default: null,
+  },
+  isGroupMember: {
+    type: Boolean,
+    default: false,
+  },
 // Payment tracking fields
 paymentStatus: {
   type: String,

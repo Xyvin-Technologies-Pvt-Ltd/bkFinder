@@ -13,6 +13,7 @@ function ViewExcel() {
   const [showAddUser, setShowAddUser] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("event");
+  const [sortFilter, setSortFilter] = useState("newest");
   const [stallData, setStallData] = useState([]);
   const [awardData, setAwardData] = useState([]);
   const navigate = useNavigate();
@@ -71,7 +72,19 @@ function ViewExcel() {
         user.position?.toLowerCase().includes(searchLower)
       );
     })
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by date descending
+    .filter((user) => {
+      if (activeTab === "award" || sortFilter === "newest") return true;
+      return user.paymentStatus === sortFilter;
+    })
+    .sort((a, b) => {
+      const aDate = new Date(a.createdAt || 0).getTime();
+      const bDate = new Date(b.createdAt || 0).getTime();
+
+      if (activeTab === "award" || sortFilter === "newest") {
+        return bDate - aDate;
+      }
+      return bDate - aDate;
+    });
 
   const currentUsers = filteredData.slice(indexOfFirstUser, indexOfLastUser);
   const totalPages = Math.max(1, Math.ceil(filteredData.length / usersPerPage));
@@ -114,10 +127,10 @@ function ViewExcel() {
   const handleDownload = () => {
     const dataToExport =
       activeTab === "event"
-        ? data
+        ? filteredData
         : activeTab === "stall"
-          ? stallData
-          : awardData;
+          ? filteredData
+          : filteredData;
 
     if (!dataToExport.length) {
       toast.error("No data to export!");
@@ -130,6 +143,7 @@ function ViewExcel() {
           Name: user.name,
           Phone: user.phone,
           Place: user.place,
+          Payment_Status: user.paymentStatus || "-",
           Registered_At: user.createdAt
             ? new Date(user.createdAt).toLocaleString()
             : "-",
@@ -141,6 +155,7 @@ function ViewExcel() {
             Position: user.position,
             Phone: user.phone,
             Place: user.place,
+            Payment_Status: user.paymentStatus || "-",
             Registered_At: user.createdAt
               ? new Date(user.createdAt).toLocaleString()
               : "-",
@@ -275,11 +290,41 @@ function ViewExcel() {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1); // Reset to first page when searching
               }}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+              className="h-11 px-4 border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
             />
+            {(activeTab === "event" || activeTab === "stall") && (
+              <div className="relative">
+                <select
+                  value={sortFilter}
+                  onChange={(e) => {
+                    setSortFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="h-11 pl-4 pr-10 border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none"
+                  title="Sort by"
+                >
+                  <option value="newest">Newest</option>
+                  <option value="paid">Paid</option>
+                  <option value="unpaid">Unpaid</option>
+                  <option value="admin_created">Admin created</option>
+                </select>
+                <svg
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            )}
             <button
               onClick={() => setShowAddUser(true)}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center gap-2 text-sm font-medium"
+              className="h-11 bg-green-600 text-white px-4 rounded-xl hover:bg-green-700 transition flex items-center gap-2 text-sm font-medium shadow-sm"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

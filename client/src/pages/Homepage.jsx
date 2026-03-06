@@ -25,6 +25,15 @@ function Homepage() {
     cType: "",
   });
 
+  const [members, setMembers] = useState([
+    { name: "", phone: "", place: "" },
+  ]);
+
+  const [groupSuccess, setGroupSuccess] = useState({
+    open: false,
+    users: [],
+  });
+
   const [stallData, setStallData] = useState({
     name: "",
     companyName: "",
@@ -48,6 +57,7 @@ function Homepage() {
 
   const formRef = useRef(null);
   const photoRef = useRef(null);
+  const memberRefs = useRef([]);
   const [activeForm, setActiveForm] = useState("event");
   const [showBooking, setShowBooking] = useState(false);
   const [showBookingChooser, setShowBookingChooser] = useState(false);
@@ -57,6 +67,12 @@ function Homepage() {
   const [errorsStall, setErrorsStall] = useState({});
   const [errorsAward, setErrorsAward] = useState({});
   const [highlightsVisible, setHighlightsVisible] = useState(false);
+
+  const ticketPrice = 999;
+  const totalMembers = members.length;
+  const totalAmount = totalMembers * ticketPrice;
+
+  const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
 
   const highlightsRef = useRef(null);
 
@@ -82,6 +98,57 @@ function Homepage() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const validateMembers = () => {
+    const newErrors = {};
+
+    for (let i = 0; i < members.length; i++) {
+      const m = members[i];
+
+      if (!m.name?.trim() || !m.phone?.trim() || !m.place?.trim()) {
+        toast.error(`Please fill name, phone, and place for Member ${i + 1}`);
+        if (i === 0) {
+          if (!m.name?.trim()) newErrors.name = "Full Name is required";
+          if (!m.phone?.trim()) newErrors.phone = "Phone number is required";
+          if (!m.place?.trim()) newErrors.place = "Place is required";
+        }
+        setErrors(newErrors);
+        return false;
+      }
+
+      if (!/^[0-9]{10}$/.test(m.phone)) {
+        toast.error(`Enter 10 digit number for Member ${i + 1}`);
+        if (i === 0) newErrors.phone = "Enter 10 digit number";
+        setErrors(newErrors);
+        return false;
+      }
+    }
+
+    setErrors(newErrors);
+    return true;
+  };
+
+  const updateMember = (index, field, value) => {
+    setMembers((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  };
+
+  const addMember = () => {
+    setMembers((prev) => {
+      if (prev.length >= 10) {
+        toast.error("Maximum 10 members allowed");
+        return prev;
+      }
+      return [...prev, { name: "", phone: "", place: "" }];
+    });
+  };
+
+  const removeMember = (index) => {
+    setMembers((prev) => prev.filter((_, i) => i !== index));
   };
 
 
@@ -238,8 +305,8 @@ function Homepage() {
           onSuccess(response);
         },
         prefill: {
-          name: formData.name || stallData.name,
-          contact: formData.phone || stallData.phone,
+          name: (activeForm === "event" ? members?.[0]?.name : formData.name) || stallData.name,
+          contact: (activeForm === "event" ? members?.[0]?.phone : formData.phone) || stallData.phone,
           email: formData.email || stallData.email,
         },
         theme: {
@@ -259,33 +326,71 @@ function Homepage() {
   // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateEventForm()) return;
 
-    // Trigger Payment first (Visitor Pass = 999)
-    await handleRazorpayPayment(999, async (paymentResponse) => {
+    if (!validateMembers()) return;
+
+    if (members.length === 1) {
+      await handleRazorpayPayment(999, async (paymentResponse) => {
+        try {
+          const fd = new FormData();
+          fd.append("name", members[0].name);
+          fd.append("phone", members[0].phone);
+          fd.append("place", members[0].place);
+          if (formData.photo) fd.append("photo", formData.photo);
+
+          // Append payment details if backend needs them
+          fd.append("razorpay_payment_id", paymentResponse.razorpay_payment_id);
+          fd.append("razorpay_order_id", paymentResponse.razorpay_order_id);
+          fd.append("razorpay_signature", paymentResponse.razorpay_signature);
+
+          const res = await registerUser(fd);
+          console.log(res.data);
+          toast.success("Payment & Registration successful!");
+          window.location.href = `/card/${res.data.userId}`;
+
+          setMembers([{ name: "", phone: "", place: "" }]);
+          setFormData({ name: "", phone: "", place: "", photo: null });
+          if (photoRef.current) photoRef.current.value = "";
+        } catch (err) {
+          console.error("Error submitting form:", err);
+          toast.error("Registration failed after payment. Contact support.");
+        }
+      });
+      return;
+    }
+
+    await handleRazorpayPayment(totalAmount, async (paymentResponse) => {
       try {
-        const fd = new FormData();
-        fd.append("name", formData.name);
-        fd.append("phone", formData.phone);
-        fd.append("place", formData.place);
-        if (formData.photo) fd.append("photo", formData.photo);
+        const payload = {
+          primaryContact: members[0],
+          members,
+          payment: {
+            paymentId: paymentResponse.razorpay_payment_id,
+            orderId: paymentResponse.razorpay_order_id,
+            signature: paymentResponse.razorpay_signature,
+          },
+        };
 
-        // Append payment details if backend needs them
-        fd.append("razorpay_payment_id", paymentResponse.razorpay_payment_id);
-        fd.append("razorpay_order_id", paymentResponse.razorpay_order_id);
-        fd.append("razorpay_signature", paymentResponse.razorpay_signature);
+        const resp = await fetch(`${baseUrl}/api/users/register-group`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
 
-        const res = await registerUser(fd);
-        console.log(res.data);
-        toast.success("Payment & Registration successful!");
-        window.location.href = `/card/${res.data.userId}`;
+        const data = await resp.json();
+        if (!resp.ok) {
+          throw new Error(data?.message || "Group registration failed");
+        }
 
+        toast.success("Group Booking Successful");
+        window.location.href = `/group-tickets/${data.groupId}`;
+
+        setMembers([{ name: "", phone: "", place: "" }]);
         setFormData({ name: "", phone: "", place: "", photo: null });
         if (photoRef.current) photoRef.current.value = "";
-
       } catch (err) {
-        console.error("Error submitting form:", err);
-        toast.error("Registration failed after payment. Contact support.");
+        console.error(err);
+        toast.error(err?.message || "Group booking failed after payment.");
       }
     });
   };
@@ -371,6 +476,15 @@ function Homepage() {
             opacity: 1;
           }
         }
+
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #cbd5f5;
+          border-radius: 4px;
+        }
       `}</style>
 
       {/* Hero Section - Poster Background (image only) */}
@@ -446,6 +560,60 @@ function Homepage() {
           </button>
         </div>
       </section>
+
+      {groupSuccess.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setGroupSuccess({ open: false, users: [] })}
+          />
+
+          <div className="relative z-10 w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-100 p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-900">Group Booking Successful</h3>
+                <p className="text-sm text-slate-500 mt-1">Your tickets are ready. Open each card below.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setGroupSuccess({ open: false, users: [] })}
+                className="text-slate-500 hover:text-slate-800 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mt-5 space-y-3">
+              {(groupSuccess.users || []).map((u, idx) => (
+                <div key={u.id || idx} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 p-3 bg-slate-50">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-800 truncate">{u.name}</p>
+                    <p className="text-xs text-slate-500">Ticket ID: {u.id}</p>
+                  </div>
+                  <a
+                    href={`/card/${u.id}`}
+                    className="text-xs font-bold text-emerald-700 hover:text-emerald-900 underline underline-offset-4 whitespace-nowrap"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View Card
+                  </a>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setGroupSuccess({ open: false, users: [] })}
+                className="px-5 py-2.5 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Booking Type Chooser Popup - mobile only */}
       <section
@@ -563,7 +731,7 @@ function Homepage() {
       {/* Booking Overlay */}
 
       <section
-        className={`fixed inset-0 z-20 flex items-center justify-center px-4 transition-opacity duration-300 ease-out ${showBooking ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        className={`fixed inset-0 z-20 flex items-start sm:items-center justify-center px-4 pt-4 sm:pt-0 transition-opacity duration-300 ease-out ${showBooking ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
           }`}
       >
         <div
@@ -571,10 +739,10 @@ function Homepage() {
           onClick={() => setShowBooking(false)}
         />
         <div
-          className={`relative w-full max-w-3xl transform transition-transform duration-300 ease-out ${showBooking ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
+          className={`relative w-full max-w-xl sm:max-w-2xl max-h-[90vh] overflow-hidden transform transition-transform duration-300 ease-out ${showBooking ? "translate-y-0 scale-100" : "translate-y-4 scale-95"
             }`}
         >
-          <div className="relative flex flex-col items-center justify-start rounded-3xl bg-white/90 backdrop-blur-md shadow-2xl px-6 sm:px-10 py-6 sm:py-8">
+          <div className="relative flex flex-col items-center justify-start rounded-2xl bg-white/90 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.25)] px-4 sm:px-10 py-4 sm:py-8 max-h-[90vh]">
             {/* Close button for forms */}
 
             <button
@@ -600,7 +768,7 @@ function Homepage() {
             )}
 
             {/* EVENT | AWARD | STALL SWITCHER */}
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 mb-4 sm:mb-6">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 mb-3 sm:mb-6 shrink-0">
               <button
                 onClick={() => setActiveForm("event")}
                 className={`text-base sm:text-xl font-extrabold uppercase tracking-[0.18em] transition-all duration-300 ${activeForm === "event"
@@ -643,11 +811,11 @@ function Homepage() {
             {/* EVENT FORM */}
             {activeForm === "event" && (
               <div
-                className="w-full animate-fadeIn transition-transform duration-500 ease-out transform"
+                className="w-full animate-fadeIn transition-transform duration-500 ease-out transform flex flex-col min-h-0"
                 style={{ animation: "flipInY 0.6s ease-out" }}
               >
-                <div className="text-center mb-4 sm:mb-6">
-                  <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 mb-1 sm:mb-2 py-1 uppercase tracking-[0.22em]">
+                <div className="text-center mb-3">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-1 sm:mb-2 py-0 uppercase tracking-[0.22em]">
                     Book Your Ticket Now
                   </h2>
                   <p className="text-slate-500 font-light mb-4 text-xs sm:text-sm max-w-lg mx-auto">
@@ -655,9 +823,9 @@ function Homepage() {
                     Our team will get in touch with you soon.
                   </p>
 
-                  <div className="mb-6 flex flex-col items-center justify-center space-y-2">
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-5 py-2 shadow-sm">
-                      <p className="text-emerald-700 font-bold text-base sm:text-lg tracking-wide uppercase">
+                  <div className="mb-3 flex flex-col items-center justify-center space-y-2">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-1.5 shadow-sm">
+                      <p className="text-emerald-700 font-bold text-sm tracking-wide uppercase">
                         Visitor Pass: ₹999/-
                       </p>
                     </div>
@@ -680,63 +848,196 @@ function Homepage() {
                   </div>
                 </div>
 
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                  <div className="grid grid-cols-1">
-                    <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Jane D'Souza"
-                      maxLength={19}
-                      className={`w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 
-                focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base
-                ${errors.name ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"}
-                `}
-                    />
+                <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
+                  <form className="space-y-4" onSubmit={handleSubmit}>
+                    <div
+                      ref={(el) => {
+                        memberRefs.current[0] = el;
+                      }}
+                      className="rounded-lg border border-slate-200 p-3 bg-gray-50"
+                      id="member-0"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-bold text-slate-800 tracking-wide uppercase">
+                          Member 1
+                        </h3>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-1">
+                          <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
+                            Full Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={members[0]?.name}
+                            onChange={(e) => updateMember(0, "name", e.target.value)}
+                            placeholder="Jane D'Souza"
+                            maxLength={19}
+                            className={`w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 
+                      focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base
+                      ${errors.name ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"}
+                      `}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1">
+                          <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
+                            WhatsApp Number <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="tel"
+                            inputMode="numeric"
+                            pattern="[0-9]{10}"
+                            maxLength={10}
+                            value={members[0]?.phone}
+                            onChange={(e) => updateMember(0, "phone", e.target.value.replace(/\D/g, ""))}
+                            placeholder="Enter 10 digit mobile number"
+                            className={`w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 
+                      focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base
+                      ${errors.phone ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"}
+                      `}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1">
+                          <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
+                            Place <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={members[0]?.place}
+                            onChange={(e) => updateMember(0, "place", e.target.value)}
+                            placeholder="Kochi"
+                            className={`w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 
+                      focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base
+                      ${errors.place ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"}
+                      `}
+                          />
+                        </div>
+
+                      </div>
+                    </div>
+
+                  {members.slice(1).map((m, idx) => {
+                    const memberIndex = idx + 1;
+                    return (
+                      <div
+                        key={memberIndex}
+                        ref={(el) => {
+                          memberRefs.current[memberIndex] = el;
+                        }}
+                        className="rounded-lg border border-slate-200 p-3 bg-gray-50"
+                        id={`member-${memberIndex}`}
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-sm font-bold text-slate-800 tracking-wide uppercase">
+                            Member {memberIndex + 1}
+                          </h3>
+                          <button
+                            type="button"
+                            onClick={() => removeMember(memberIndex)}
+                            className="text-xs font-semibold text-red-600 hover:text-red-800"
+                          >
+                            Remove
+                          </button>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-1">
+                            <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
+                              Full Name <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={members[memberIndex]?.name}
+                              onChange={(e) => updateMember(memberIndex, "name", e.target.value)}
+                              placeholder="Full name"
+                              maxLength={19}
+                              className="w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-1">
+                            <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
+                              WhatsApp Number <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="tel"
+                              inputMode="numeric"
+                              pattern="[0-9]{10}"
+                              maxLength={10}
+                              value={members[memberIndex]?.phone}
+                              onChange={(e) => updateMember(memberIndex, "phone", e.target.value.replace(/\D/g, ""))}
+                              placeholder="Enter 10 digit mobile number"
+                              className="w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-1">
+                            <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
+                              Place <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={members[memberIndex]?.place}
+                              onChange={(e) => updateMember(memberIndex, "place", e.target.value)}
+                              placeholder="Kochi"
+                              className="w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <button
+                    type="button"
+                    onClick={addMember}
+                    className="w-full border-2 border-dashed border-slate-300 rounded-lg py-2 text-xs font-semibold text-slate-700 hover:bg-gray-100 transition-colors"
+                  >
+                    + Add Member
+                  </button>
+
+                  <div className="pt-1">
+                    <div className="flex flex-wrap gap-2">
+                      {members.map((m, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            const el = memberRefs.current[idx];
+                            if (el && typeof el.scrollIntoView === "function") {
+                              el.scrollIntoView({ behavior: "smooth", block: "start" });
+                            }
+                          }}
+                          className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+                          title={`Go to Member ${idx + 1}`}
+                        >
+                          {m?.name?.trim() ? m.name : `Member ${idx + 1}`}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1">
-                    <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
-                      WhatsApp Number <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      inputMode="numeric"
-                      pattern="[0-9]{10}"
-                      maxLength={10}
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="Enter 10 digit mobile number"
-                      className={`w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 
-                focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base
-                ${errors.phone ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"}
-                `}
-                    />
+                  <div className="rounded-lg border border-slate-200 p-3 bg-white">
+                    <div className="flex flex-col gap-1 text-xs text-slate-700">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold">Total Members</span>
+                        <span className="font-bold">{totalMembers}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold">Price per Ticket</span>
+                        <span className="font-bold">₹{ticketPrice}</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <span className="font-semibold">Total Amount</span>
+                        <span className="font-extrabold text-emerald-700">₹{totalAmount}</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1">
-                    <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 tracking-wide">
-                      Place <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="place"
-                      value={formData.place}
-                      onChange={handleChange}
-                      placeholder="Kochi"
-                      className={`w-full border border-slate-200 bg-slate-50 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-300 
-                focus:bg-white focus:border-emerald-400 hover:bg-white focus:ring-4 focus:ring-emerald-100 transition-all duration-300 outline-none text-sm sm:text-base
-                ${errors.place ? "border-red-500 bg-red-50" : "border-slate-200 bg-slate-50"}
-                `}
-                    />
-                  </div>
-
-                  <div className="pt-2 text-center">
+                  <div className="sticky bottom-0 bg-transparent pt-3 text-center">
                     <button
                       type="submit"
                       className="relative inline-block px-10 py-3 cursor-pointer rounded-full overflow-hidden group focus:outline-none shadow-md"
@@ -756,7 +1057,8 @@ function Homepage() {
                   <p className="text-[0.65rem] sm:text-xs text-center text-slate-400 mt-3">
                     * Required fields. We respect your privacy and never share your information.
                   </p>
-                </form>
+                  </form>
+                </div>
               </div>
             )}
 
