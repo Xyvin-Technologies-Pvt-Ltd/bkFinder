@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   registrationType: {
     type: String,
-    enum: ["visitor", "award", "stall"],
+    enum: ["visitor", "award", "stall", "vip", "exhibitor"],
     default: "visitor",
   },
   cName:{

@@ -1,6 +1,7 @@
 const express = require("express");
 const { createCanvas, loadImage } = require("canvas");
 const path = require("path");
+const fs = require("fs");
 const User = require("../model/userModel");
 
 const router = express.Router();
@@ -32,7 +33,6 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-
 /* helper: load remote image */
 const loadImageFromUrl = async (url) => {
   const res = await fetch(url);
@@ -56,7 +56,18 @@ router.get("/image/:id", async (req, res) => {
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     /* FRAME */
-    const framePath = path.join(__dirname, "../public/frame/frame.jpg");
+    const defaultFramePath = path.join(__dirname, "../public/frame/frame.jpg");
+    const vipFramePath = path.join(__dirname, "../public/frame/vip-frame.jpg");
+    const exhibitorFramePath = path.join(__dirname, "../public/frame/Exhibitor-pass.jpg");
+
+    let framePath = defaultFramePath;
+    if (user.registrationType === "vip" && fs.existsSync(vipFramePath)) {
+      framePath = vipFramePath;
+    }
+    if (user.registrationType === "exhibitor" && fs.existsSync(exhibitorFramePath)) {
+      framePath = exhibitorFramePath;
+    }
+
     const frame = await loadImage(framePath);
     ctx.drawImage(frame, 0, 0, WIDTH, HEIGHT);
 
@@ -66,7 +77,7 @@ router.get("/image/:id", async (req, res) => {
       const photoWidth = 340;
       const photoHeight = Math.round(photoWidth * 6 / 5);
       const photoX = 540;
-      const photoY = 650;
+      const photoY = 690;
 
       ctx.save();
       ctx.beginPath();
@@ -109,22 +120,33 @@ router.get("/image/:id", async (req, res) => {
       badgeText = "BUSINESS AWARD NOMINEE";
     } else if (user.registrationType === "stall") {
       badgeText = "STALL";
+    } else if (user.registrationType === "vip") {
+      badgeText = "";
+    } else if (user.registrationType === "exhibitor") {
+      badgeText = "";
     } else {
       // default visitor badge
       badgeText = "VISITOR";
     }
 
+    const isVip = user.registrationType === "vip";
+    const isExhibitor = user.registrationType === "exhibitor";
+    const isGuestPass = isVip;
+    const nameFont = isVip ? "bold 38px sans-serif" : "bold 40px sans-serif";
+    const placeFont = isVip ? "34px sans-serif" : "36px sans-serif";
+    const badgeFont = "bold 30px sans-serif";
+
     /* NAME */
-    ctx.font = "bold 40px sans-serif";
+    ctx.font = nameFont;
 
     const nameTextWidth = ctx.measureText(displayName).width;
 
     /* PLACE */
-    ctx.font = "36px sans-serif";
+    ctx.font = placeFont;
     const placeTextWidth = ctx.measureText(displayPlace).width;
 
     /* BADGE */
-    ctx.font = "bold 30px sans-serif";
+    ctx.font = badgeFont;
 
     const badgeTextWidth = ctx.measureText(badgeText).width;
 
@@ -140,7 +162,7 @@ router.get("/image/:id", async (req, res) => {
 
     /* POSITION: horizontally centered; used as reference for text + QR */
     const boxX = (WIDTH - boxWidth) / 2;
-    const boxY = 480;
+    const boxY = (isExhibitor || isGuestPass) ? 540 : 520;
 
     /* DRAW NAME / PLACE / BADGE (black text, stacked) */
     ctx.fillStyle = "#000000";
@@ -148,20 +170,18 @@ router.get("/image/:id", async (req, res) => {
     let currentY = boxY + paddingY + 40;
 
     // Name
-    ctx.font = "bold 40px sans-serif";
+    ctx.font = nameFont;
     ctx.fillText(displayName, boxX + boxWidth / 2, currentY);
 
     // Place (always render line between name and badge)
     currentY += gap + 34;
-    ctx.font = "36px sans-serif";
+    ctx.font = placeFont;
     ctx.fillText(displayPlace, boxX + boxWidth / 2, currentY);
 
     // Badge line
     if (badgeText) {
       // add a bit more space below place before the badge
       currentY += gap + 40;
-
-      const badgeFont = "bold 30px sans-serif";
 
       ctx.font = badgeFont;
 
@@ -175,8 +195,8 @@ router.get("/image/:id", async (req, res) => {
       const badgeBoxX = (WIDTH - badgeBoxWidth) / 2;
       const badgeBoxY = currentY - 30 - badgePaddingY;
 
-      // Themed background (green, matching card accents)
-      ctx.fillStyle = "#0f766e"; // teal/green
+      // Themed background (green default; gold for VIP)
+      ctx.fillStyle = user.registrationType === "vip" ? "#b45309" : "#0f766e";
       drawRoundedRect(ctx, badgeBoxX, badgeBoxY, badgeBoxWidth, badgeBoxHeight, 18);
       ctx.fill();
 
@@ -191,9 +211,9 @@ router.get("/image/:id", async (req, res) => {
     /* QR - centered below the name, slightly larger */
     if (user.qr) {
       const qr = await loadImageFromUrl(user.qr);
-      const qrSize = 270;
+      const qrSize = (isExhibitor || isGuestPass) ? 260 : 240;
       const qrX = (WIDTH - qrSize) / 2;
-      const qrY = boxY + boxHeight;
+      const qrY = boxY + boxHeight + ((isExhibitor || isGuestPass) ? -20 : 0);
       ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
     }
 

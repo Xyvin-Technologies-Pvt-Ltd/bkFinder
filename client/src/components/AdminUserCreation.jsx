@@ -1,9 +1,21 @@
 import React, { useState, useRef } from "react";
-import { adminRegisterUser, adminRegisterStall, adminCreateAward } from "../api/userApi";
+import { adminRegisterUser, adminRegisterStall, adminCreateAward, adminRegisterVip, adminRegisterExhibitor } from "../api/userApi";
 import { toast } from "sonner";
 
 function AdminUserCreation({ onClose, onSuccess, activeTab }) {
   const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    place: "",
+  });
+
+  const [vipData, setVipData] = useState({
+    name: "",
+    phone: "",
+    place: "",
+  });
+
+  const [exhibitorData, setExhibitorData] = useState({
     name: "",
     phone: "",
     place: "",
@@ -25,6 +37,8 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
   });
 
   const [errors, setErrors] = useState({});
+  const [errorsVip, setErrorsVip] = useState({});
+  const [errorsExhibitor, setErrorsExhibitor] = useState({});
   const [errorsStall, setErrorsStall] = useState({});
   const [errorsAward, setErrorsAward] = useState({});
   const [activeForm, setActiveForm] = useState(activeTab || "event");
@@ -54,6 +68,26 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateVipForm = () => {
+    let newErrors = {};
+    if (!vipData.name.trim()) newErrors.name = "Full Name is required";
+    if (!vipData.phone.trim()) newErrors.phone = "Phone number is required";
+    else if (!/^[0-9]{10}$/.test(vipData.phone)) newErrors.phone = "Enter 10 digit number";
+    if (!vipData.place.trim()) newErrors.place = "Place is required";
+    setErrorsVip(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateExhibitorForm = () => {
+    let newErrors = {};
+    if (!exhibitorData.name.trim()) newErrors.name = "Full Name is required";
+    if (!exhibitorData.phone.trim()) newErrors.phone = "Phone number is required";
+    else if (!/^[0-9]{10}$/.test(exhibitorData.phone)) newErrors.phone = "Enter 10 digit number";
+    if (!exhibitorData.place.trim()) newErrors.place = "Place is required";
+    setErrorsExhibitor(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const validateAwardForm = () => {
     let newErrors = {};
     if (!awardData.name.trim()) newErrors.name = "Full Name is required";
@@ -77,6 +111,34 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.error || "Failed to create event ticket");
+    }
+  };
+
+  const handleExhibitorSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateExhibitorForm()) return;
+
+    try {
+      await adminRegisterExhibitor(exhibitorData);
+      toast.success("Exhibitor pass created successfully!");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Failed to create exhibitor pass");
+    }
+  };
+
+  const handleVipSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateVipForm()) return;
+
+    try {
+      await adminRegisterVip(vipData);
+      toast.success("Guest pass created successfully!");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Failed to create guest pass");
     }
   };
 
@@ -154,6 +216,28 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
               }`}
             >
               Award Nomination
+            </button>
+
+            <button
+              onClick={() => setActiveForm("vip")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeForm === "vip"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Guest Pass
+            </button>
+
+            <button
+              onClick={() => setActiveForm("exhibitor")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeForm === "exhibitor"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Exhibitor Pass
             </button>
           </div>
         </div>
@@ -379,6 +463,138 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
                   className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
                 >
                   Create Award Nomination
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* VIP Form */}
+          {activeForm === "vip" && (
+            <form ref={formRef} onSubmit={handleVipSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={vipData.name}
+                  onChange={(e) => setVipData({ ...vipData, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter full name"
+                />
+                {errorsVip.name && <p className="text-red-500 text-xs mt-1">{errorsVip.name}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  value={vipData.phone}
+                  onChange={(e) => setVipData({ ...vipData, phone: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter 10 digit phone number"
+                />
+                {errorsVip.phone && <p className="text-red-500 text-xs mt-1">{errorsVip.phone}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Place *
+                </label>
+                <input
+                  type="text"
+                  value={vipData.place}
+                  onChange={(e) => setVipData({ ...vipData, place: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter place"
+                />
+                {errorsVip.place && <p className="text-red-500 text-xs mt-1">{errorsVip.place}</p>}
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="submit"
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                >
+                  Create Guest Pass
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Exhibitor Form */}
+          {activeForm === "exhibitor" && (
+            <form ref={formRef} onSubmit={handleExhibitorSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={exhibitorData.name}
+                  onChange={(e) => setExhibitorData({ ...exhibitorData, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter full name"
+                />
+                {errorsExhibitor.name && (
+                  <p className="text-red-500 text-xs mt-1">{errorsExhibitor.name}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  value={exhibitorData.phone}
+                  onChange={(e) => setExhibitorData({ ...exhibitorData, phone: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter 10 digit phone number"
+                />
+                {errorsExhibitor.phone && (
+                  <p className="text-red-500 text-xs mt-1">{errorsExhibitor.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Place *
+                </label>
+                <input
+                  type="text"
+                  value={exhibitorData.place}
+                  onChange={(e) => setExhibitorData({ ...exhibitorData, place: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter place"
+                />
+                {errorsExhibitor.place && (
+                  <p className="text-red-500 text-xs mt-1">{errorsExhibitor.place}</p>
+                )}
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="submit"
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                >
+                  Create Exhibitor Pass
                 </button>
                 <button
                   type="button"

@@ -90,4 +90,12 @@ export const adminCreateAward = (data) => {
   return API.post("/api/admin/awards/create", data);
 };
 
+export const adminRegisterVip = (data) => {
+  return API.post("/api/admin/vip/register", data);
+};
+
+export const adminRegisterExhibitor = (data) => {
+  return API.post("/api/admin/exhibitor/register", data);
+};
+
 export default API;

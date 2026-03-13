@@ -8,6 +8,8 @@ import AdminUserCreation from "../components/AdminUserCreation";
 
 function ViewExcel() {
   const [data, setData] = useState([]);
+  const [vipData, setVipData] = useState([]);
+  const [exhibitorData, setExhibitorData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 20;
   const [showAddUser, setShowAddUser] = useState(false);
@@ -31,10 +33,18 @@ function ViewExcel() {
           user.registrationType === "visitor" || !user.registrationType
         );
         setData(eventBookings);
+
+        const vipBookings = (res.data || []).filter(user => user.registrationType === "vip");
+        setVipData(vipBookings);
+
+        const exhibitorBookings = (res.data || []).filter(user => user.registrationType === "exhibitor");
+        setExhibitorData(exhibitorBookings);
       })
       .catch((err) => {
         console.error("Fetch error:", err);
         setData([]);
+        setVipData([]);
+        setExhibitorData([]);
       });
   }, []);
 
@@ -86,8 +96,44 @@ function ViewExcel() {
       return bDate - aDate;
     });
 
-  const currentUsers = filteredData.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.max(1, Math.ceil(filteredData.length / usersPerPage));
+  const filteredVipData = (vipData || [])
+    .filter((user) => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        user.name?.toLowerCase().includes(searchLower) ||
+        user.phone?.toLowerCase().includes(searchLower) ||
+        user.place?.toLowerCase().includes(searchLower)
+      );
+    })
+    .sort((a, b) => {
+      const aDate = new Date(a.createdAt || 0).getTime();
+      const bDate = new Date(b.createdAt || 0).getTime();
+      return bDate - aDate;
+    });
+
+  const filteredExhibitorData = (exhibitorData || [])
+    .filter((user) => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        user.name?.toLowerCase().includes(searchLower) ||
+        user.phone?.toLowerCase().includes(searchLower) ||
+        user.place?.toLowerCase().includes(searchLower)
+      );
+    })
+    .sort((a, b) => {
+      const aDate = new Date(a.createdAt || 0).getTime();
+      const bDate = new Date(b.createdAt || 0).getTime();
+      return bDate - aDate;
+    });
+
+  const activeList =
+    activeTab === "vip"
+      ? filteredVipData
+      : activeTab === "exhibitor"
+        ? filteredExhibitorData
+        : filteredData;
+  const currentUsers = activeList.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.max(1, Math.ceil(activeList.length / usersPerPage));
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -111,6 +157,12 @@ function ViewExcel() {
           user.registrationType === "visitor" || !user.registrationType
         );
         setData(eventBookings);
+
+        const vipBookings = (res.data || []).filter(user => user.registrationType === "vip");
+        setVipData(vipBookings);
+
+        const exhibitorBookings = (res.data || []).filter(user => user.registrationType === "exhibitor");
+        setExhibitorData(exhibitorBookings);
       })
       .catch(() => setData([]));
     
@@ -126,10 +178,10 @@ function ViewExcel() {
   // Download Excel
   const handleDownload = () => {
     const dataToExport =
-      activeTab === "event"
-        ? filteredData
-        : activeTab === "stall"
-          ? filteredData
+      activeTab === "vip"
+        ? filteredVipData
+        : activeTab === "exhibitor"
+          ? filteredExhibitorData
           : filteredData;
 
     if (!dataToExport.length) {
@@ -148,6 +200,24 @@ function ViewExcel() {
             ? new Date(user.createdAt).toLocaleString()
             : "-",
         }))
+        : activeTab === "vip"
+          ? dataToExport.map((user) => ({
+            Name: user.name,
+            Phone: user.phone,
+            Place: user.place,
+            Registered_At: user.createdAt
+              ? new Date(user.createdAt).toLocaleString()
+              : "-",
+          }))
+        : activeTab === "exhibitor"
+          ? dataToExport.map((user) => ({
+            Name: user.name,
+            Phone: user.phone,
+            Place: user.place,
+            Registered_At: user.createdAt
+              ? new Date(user.createdAt).toLocaleString()
+              : "-",
+          }))
         : activeTab === "stall"
           ? dataToExport.map((user) => ({
             Full_Name: user.name,
@@ -177,6 +247,10 @@ function ViewExcel() {
       worksheet,
       activeTab === "event"
         ? "Event Bookings"
+        : activeTab === "vip"
+          ? "Guest Pass"
+        : activeTab === "exhibitor"
+          ? "Exhibitor Passes"
         : activeTab === "stall"
           ? "Stall Bookings"
           : "Award Nominations"
@@ -191,6 +265,10 @@ function ViewExcel() {
       blob,
       activeTab === "event"
         ? "event_bookings.xlsx"
+        : activeTab === "vip"
+          ? "guest_pass.xlsx"
+        : activeTab === "exhibitor"
+          ? "exhibitor_passes.xlsx"
         : activeTab === "stall"
           ? "stall_bookings.xlsx"
           : "award_nominations.xlsx"
@@ -247,6 +325,30 @@ function ViewExcel() {
             AWARD NOMINATION
           </button>
 
+          {/* VIP TAB */}
+          <button
+            onClick={() => setActiveTab("vip")}
+            className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
+        ${activeTab === "vip"
+                ? "bg-blue-100 text-black"
+                : "bg-white text-gray-500 hover:bg-gray-100"
+              }`}
+          >
+            GUEST PASS
+          </button>
+
+          {/* EXHIBITOR TAB */}
+          <button
+            onClick={() => setActiveTab("exhibitor")}
+            className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
+        ${activeTab === "exhibitor"
+                ? "bg-blue-100 text-black"
+                : "bg-white text-gray-500 hover:bg-gray-100"
+              }`}
+          >
+            EXHIBITOR PASS
+          </button>
+
         </div>
       </div>
       <div className="w-full max-w-7xl mx-auto">
@@ -260,13 +362,17 @@ function ViewExcel() {
                 <span className="font-semibold">
                   {activeTab === "event"
                     ? data.length
+                    : activeTab === "vip"
+                      ? vipData.length
+                      : activeTab === "exhibitor"
+                        ? exhibitorData.length
                     : activeTab === "stall"
                       ? stallData.length
                       : awardData.length}
                 </span>
                 {searchTerm && (
                   <span className="ml-2 text-blue-600">
-                    (Found: {filteredData.length})
+                    (Found: {activeTab === "vip" ? filteredVipData.length : activeTab === "exhibitor" ? filteredExhibitorData.length : filteredData.length})
                   </span>
                 )}
               </p>
@@ -349,6 +455,26 @@ function ViewExcel() {
                 </tr>
               )}
 
+              {activeTab === "vip" && (
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Place</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Card</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Registered At</th>
+                </tr>
+              )}
+
+              {activeTab === "exhibitor" && (
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Place</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Card</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Registered At</th>
+                </tr>
+              )}
+
               {activeTab === "stall" && (
                 <tr>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
@@ -398,6 +524,49 @@ function ViewExcel() {
                             <span className="text-gray-600 font-medium">Unknown</span>
                           )}
                         </td>
+                        <td className="px-4 py-3">
+                          <a
+                            href={`/card/${user._id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline hover:text-blue-800"
+                          >
+                            View Card
+                          </a>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-800">
+                          {user.createdAt ? new Date(user.createdAt).toLocaleString() : "-"}
+                        </td>
+                      </>
+                    )}
+
+                    {activeTab === "exhibitor" && (
+                      <>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.name}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.phone}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.place}</td>
+                        <td className="px-4 py-3">
+                          <a
+                            href={`/card/${user._id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline hover:text-blue-800"
+                          >
+                            View Card
+                          </a>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-800">
+                          {user.createdAt ? new Date(user.createdAt).toLocaleString() : "-"}
+                        </td>
+                      </>
+                    )}
+
+                    {/* VIP rows */}
+                    {activeTab === "vip" && (
+                      <>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.name}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.phone}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.place}</td>
                         <td className="px-4 py-3">
                           <a
                             href={`/card/${user._id}`}
@@ -517,6 +686,24 @@ function ViewExcel() {
                 </div>
                 <div className="text-center mt-2">
                   {activeTab === "event" && (
+                    <button
+                      onClick={() => navigate(`/card/${user._id}`)}
+                      className="w-full bg-gray-300 text-gray-900 text-xs font-medium py-2 rounded-md hover:bg-gray-400 transition"
+                    >
+                      View Card
+                    </button>
+                  )}
+
+                  {activeTab === "vip" && (
+                    <button
+                      onClick={() => navigate(`/card/${user._id}`)}
+                      className="w-full bg-gray-300 text-gray-900 text-xs font-medium py-2 rounded-md hover:bg-gray-400 transition"
+                    >
+                      View Card
+                    </button>
+                  )}
+
+                  {activeTab === "exhibitor" && (
                     <button
                       onClick={() => navigate(`/card/${user._id}`)}
                       className="w-full bg-gray-300 text-gray-900 text-xs font-medium py-2 rounded-md hover:bg-gray-400 transition"

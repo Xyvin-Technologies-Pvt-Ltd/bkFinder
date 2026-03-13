@@ -69,6 +69,70 @@ const addUser = async (req, res) => {
   }
 };
 
+const addExhibitorUser = async (req, res) => {
+  try {
+    const { name, phone, place } = req.body;
+
+    const newUser = new User({
+      name,
+      phone,
+      place,
+      registrationType: "exhibitor",
+      paymentStatus: "admin_created",
+      paymentId: "",
+      orderId: "",
+      paymentAmount: 0,
+      paymentDate: null,
+    });
+
+    const cardUrl = `${CLIENT_URL}/card/${newUser._id}`;
+    newUser.cardUrl = cardUrl;
+    newUser.qr = await QRCode.toDataURL(cardUrl);
+
+    await newUser.save();
+
+    res.status(201).json({
+      message: "Exhibitor pass created successfully!",
+      userId: newUser._id,
+    });
+  } catch (err) {
+    console.error("Error saving Exhibitor user:", err);
+    res.status(500).json({ error: "Failed to save Exhibitor user" });
+  }
+};
+
+const addVipUser = async (req, res) => {
+  try {
+    const { name, phone, place } = req.body;
+
+    const newUser = new User({
+      name,
+      phone,
+      place,
+      registrationType: "vip",
+      paymentStatus: "admin_created",
+      paymentId: "",
+      orderId: "",
+      paymentAmount: 0,
+      paymentDate: null,
+    });
+
+    const cardUrl = `${CLIENT_URL}/card/${newUser._id}`;
+    newUser.cardUrl = cardUrl;
+    newUser.qr = await QRCode.toDataURL(cardUrl);
+
+    await newUser.save();
+
+    res.status(201).json({
+      message: "VIP ticket created successfully!",
+      userId: newUser._id,
+    });
+  } catch (err) {
+    console.error("Error saving VIP user:", err);
+    res.status(500).json({ error: "Failed to save VIP user" });
+  }
+};
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().sort({ createdAt: -1 });
@@ -91,4 +155,4 @@ const getUserById = async (req, res) => {
 
 
 
-module.exports = { addUser, getAllUsers, getUserById };
+module.exports = { addUser, addVipUser, addExhibitorUser, getAllUsers, getUserById };
