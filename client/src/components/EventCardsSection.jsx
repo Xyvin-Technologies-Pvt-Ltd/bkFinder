@@ -179,7 +179,7 @@ const EventCardsSection = ({ onBookNow }) => {
       themeColor: "maroon",
       price: "999",
       originalPrice: "1499 + GST",
-      validity: "Until Mar 20, 2026",
+      validity: "Until Mar 25, 2026",
       actionType: "event",
       highlights: [
         "Entry pass for one person",
@@ -194,7 +194,7 @@ const EventCardsSection = ({ onBookNow }) => {
       themeColor: "red",
       price: "15,000",
       originalPrice: "20,000 + GST",
-      validity: "Until Mar 20, 2026",
+      validity: "Until Mar 25, 2026",
       actionType: "stall",
       highlights: [
         "LED wall advertisement for your brand video",

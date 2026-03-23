@@ -4,6 +4,37 @@ const QRCode = require("qrcode");
 
 const CLIENT_URL = "https://bkfinder.com";
 
+// Public stall registration (no payment, no user/card generation)
+const addStallPublic = async (req, res) => {
+  try {
+    const { name, companyName, position, phone, email, place } = req.body;
+
+    const newStall = new Stall({
+      name,
+      companyName,
+      position,
+      phone,
+      email,
+      place,
+      paymentStatus: "unpaid",
+      paymentId: "",
+      orderId: "",
+      paymentAmount: 0,
+      paymentDate: null,
+    });
+
+    await newStall.save();
+
+    res.status(201).json({
+      message: "Stall booking submitted successfully!",
+      stallId: newStall._id,
+    });
+  } catch (err) {
+    console.error("Error saving public stall booking:", err);
+    res.status(500).json({ error: "Failed to save stall booking" });
+  }
+};
+
 // Add a new stall booking
 const addStall = async (req, res) => {
   try {
@@ -73,4 +104,4 @@ const getAllStalls = async (req, res) => {
   }
 };
 
-module.exports = { addStall, getAllStalls };
+module.exports = { addStallPublic, addStall, getAllStalls };

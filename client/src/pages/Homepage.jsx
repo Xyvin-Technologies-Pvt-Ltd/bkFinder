@@ -400,32 +400,18 @@ function Homepage() {
     e.preventDefault();
     if (!validateStallForm()) return;
 
-    // Trigger Payment (Stall = 15000)
-    await handleRazorpayPayment(15000, async (paymentResponse) => {
-      try {
-        const payload = {
-          ...stallData,
-          paymentId: paymentResponse.razorpay_payment_id,
-          orderId: paymentResponse.razorpay_order_id,
-          signature: paymentResponse.razorpay_signature
-        };
+    try {
+      const res = await registerStall(stallData);
+      console.log(res.data);
+      toast.success("Stall booking submitted successfully!");
 
-        const res = await registerStall(payload);
-        console.log(res.data);
-        toast.success("Stall booked successfully!");
-
-        if (res.data && res.data.userId) {
-          window.location.href = `/card/${res.data.userId}`;
-        }
-
-        setStallData({
-          name: "", companyName: "", position: "", phone: "", email: "", place: "",
-        });
-      } catch (err) {
-        console.error(err);
-        toast.error("Stall booking failed after payment.");
-      }
-    });
+      setStallData({
+        name: "", companyName: "", position: "", phone: "", email: "", place: "",
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit stall booking.");
+    }
   };
 
   const handleAwardSubmit = async (e) => {
