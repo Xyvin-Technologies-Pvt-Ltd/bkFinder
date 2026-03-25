@@ -89,9 +89,11 @@ const EventCardsSection = ({ onBookNow }) => {
               <div className="absolute -left-1 -right-1 top-1/2 h-px bg-slate-400"></div>
             </div>
           )}
-          <div className="flex items-center justify-center gap-1">
-            <span className={`text-4xl font-extrabold ${theme.text} tracking-tight`}>₹{price}</span>
-            {price !== "Free" && <span className="text-slate-500 text-sm font-semibold self-end mb-1">+ GST</span>}
+          <div className="mt-6 flex items-baseline justify-center gap-2">
+            <span className={`text-4xl font-extrabold ${theme.text} tracking-tight leading-none`}>₹{price}</span>
+            {price !== "Free" && (
+              <span className="text-slate-500 text-xs font-bold tracking-wide">+ GST</span>
+            )}
           </div>
           {validity && (
             <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-500 uppercase tracking-widest">
@@ -175,14 +177,15 @@ const EventCardsSection = ({ onBookNow }) => {
   const eventPackages = [
     {
       title: "Visitor Pass",
-      subtitle: "Early Bird Offer",
+      subtitle: "",
       themeColor: "maroon",
-      price: "999",
-      originalPrice: "1499 + GST",
-      validity: "Until Mar 25, 2026",
+      price: "1499",
+      originalPrice: "",
+      validity: "",
       actionType: "event",
       highlights: [
-        "Entry pass for one person",
+        "Access to all Conclave sessions",
+        "Entry to networking area",
         "Business Networking opportunity",
         "Welcome Drink, Lunch, Tea snacks",
         "Business Stall Access"
@@ -194,7 +197,7 @@ const EventCardsSection = ({ onBookNow }) => {
       themeColor: "red",
       price: "15,000",
       originalPrice: "20,000 + GST",
-      validity: "Until Mar 25, 2026",
+      validity: "",
       actionType: "stall",
       highlights: [
         "LED wall advertisement for your brand video",

@@ -68,7 +68,7 @@ function Homepage() {
   const [errorsAward, setErrorsAward] = useState({});
   const [highlightsVisible, setHighlightsVisible] = useState(false);
 
-  const ticketPrice = 999;
+  const ticketPrice = 1499;
   const totalMembers = members.length;
   const totalAmount = totalMembers * ticketPrice;
 
@@ -330,7 +330,7 @@ function Homepage() {
     if (!validateMembers()) return;
 
     if (members.length === 1) {
-      await handleRazorpayPayment(999, async (paymentResponse) => {
+      await handleRazorpayPayment(1499, async (paymentResponse) => {
         try {
           const fd = new FormData();
           fd.append("name", members[0].name);
@@ -812,7 +812,7 @@ function Homepage() {
                   <div className="mb-3 flex flex-col items-center justify-center space-y-2">
                     <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-1.5 shadow-sm">
                       <p className="text-emerald-700 font-bold text-sm tracking-wide uppercase">
-                        Visitor Pass: ₹999/-
+                        Visitor Pass: ₹1499/-
                       </p>
                     </div>
                     <p className="text-slate-500 text-[10px] sm:text-xs font-medium">
