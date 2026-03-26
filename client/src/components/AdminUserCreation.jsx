@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { adminRegisterUser, adminRegisterStall, adminCreateAward, adminRegisterVip, adminRegisterExhibitor } from "../api/userApi";
+import { adminRegisterUser, adminRegisterStall, adminCreateAward, adminRegisterVip, adminRegisterDelegate, adminRegisterExhibitor } from "../api/userApi";
 import { toast } from "sonner";
 
 function AdminUserCreation({ onClose, onSuccess, activeTab }) {
@@ -12,6 +12,12 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
   const [eventPackageType, setEventPackageType] = useState("with_food");
 
   const [vipData, setVipData] = useState({
+    name: "",
+    phone: "",
+    place: "",
+  });
+
+  const [delegateData, setDelegateData] = useState({
     name: "",
     phone: "",
     place: "",
@@ -40,6 +46,7 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
 
   const [errors, setErrors] = useState({});
   const [errorsVip, setErrorsVip] = useState({});
+  const [errorsDelegate, setErrorsDelegate] = useState({});
   const [errorsExhibitor, setErrorsExhibitor] = useState({});
   const [errorsStall, setErrorsStall] = useState({});
   const [errorsAward, setErrorsAward] = useState({});
@@ -80,6 +87,16 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
     return Object.keys(newErrors).length === 0;
   };
 
+  const validateDelegateForm = () => {
+    let newErrors = {};
+    if (!delegateData.name.trim()) newErrors.name = "Full Name is required";
+    if (!delegateData.phone.trim()) newErrors.phone = "Phone number is required";
+    else if (!/^[0-9]{10}$/.test(delegateData.phone)) newErrors.phone = "Enter 10 digit number";
+    if (!delegateData.place.trim()) newErrors.place = "Place is required";
+    setErrorsDelegate(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const validateExhibitorForm = () => {
     let newErrors = {};
     if (!exhibitorData.name.trim()) newErrors.name = "Full Name is required";
@@ -116,6 +133,20 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.error || "Failed to create event ticket");
+    }
+  };
+
+  const handleDelegateSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateDelegateForm()) return;
+
+    try {
+      await adminRegisterDelegate(delegateData);
+      toast.success("Delegate pass created successfully!");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Failed to create delegate pass");
     }
   };
 
@@ -235,6 +266,17 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
             </button>
 
             <button
+              onClick={() => setActiveForm("delegate")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeForm === "delegate"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Delegate Pass
+            </button>
+
+            <button
               onClick={() => setActiveForm("exhibitor")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 activeForm === "exhibitor"
@@ -339,6 +381,66 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
                   Cancel
                 </button>
               </div>
+            </form>
+          )}
+
+          {/* Delegate Form */}
+          {activeForm === "delegate" && (
+            <form ref={formRef} onSubmit={handleDelegateSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={delegateData.name}
+                  onChange={(e) => setDelegateData({ ...delegateData, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter full name"
+                />
+                {errorsDelegate.name && (
+                  <p className="text-red-500 text-xs mt-1">{errorsDelegate.name}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  value={delegateData.phone}
+                  onChange={(e) => setDelegateData({ ...delegateData, phone: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter phone number"
+                />
+                {errorsDelegate.phone && (
+                  <p className="text-red-500 text-xs mt-1">{errorsDelegate.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Place *
+                </label>
+                <input
+                  type="text"
+                  value={delegateData.place}
+                  onChange={(e) => setDelegateData({ ...delegateData, place: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter place"
+                />
+                {errorsDelegate.place && (
+                  <p className="text-red-500 text-xs mt-1">{errorsDelegate.place}</p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                Create Delegate Pass
+              </button>
             </form>
           )}
 

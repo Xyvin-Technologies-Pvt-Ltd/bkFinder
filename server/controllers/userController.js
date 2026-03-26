@@ -142,6 +142,38 @@ const addVipUser = async (req, res) => {
   }
 };
 
+const addDelegateUser = async (req, res) => {
+  try {
+    const { name, phone, place } = req.body;
+
+    const newUser = new User({
+      name,
+      phone,
+      place,
+      registrationType: "delegate",
+      paymentStatus: "admin_created",
+      paymentId: "",
+      orderId: "",
+      paymentAmount: 0,
+      paymentDate: null,
+    });
+
+    const cardUrl = `${CLIENT_URL}/card/${newUser._id}`;
+    newUser.cardUrl = cardUrl;
+    newUser.qr = await QRCode.toDataURL(cardUrl);
+
+    await newUser.save();
+
+    res.status(201).json({
+      message: "Delegate pass created successfully!",
+      userId: newUser._id,
+    });
+  } catch (err) {
+    console.error("Error saving Delegate user:", err);
+    res.status(500).json({ error: "Failed to save Delegate user" });
+  }
+};
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().sort({ createdAt: -1 });
@@ -164,4 +196,4 @@ const getUserById = async (req, res) => {
 
 
 
-module.exports = { addUser, addVipUser, addExhibitorUser, getAllUsers, getUserById };
+module.exports = { addUser, addVipUser, addDelegateUser, addExhibitorUser, getAllUsers, getUserById };

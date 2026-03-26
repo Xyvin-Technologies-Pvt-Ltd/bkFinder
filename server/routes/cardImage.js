@@ -59,18 +59,20 @@ router.get("/image/:id", async (req, res) => {
     const defaultFramePath = path.join(__dirname, "../public/frame/frame.jpg");
     const vipFramePath = path.join(__dirname, "../public/frame/vip-frame.jpg");
     const exhibitorFramePath = path.join(__dirname, "../public/frame/Exhibitor-pass.jpg");
-    const visitorWithoutFoodFramePath = path.join(
-      __dirname,
-      "../public/frame/Participating with out food.jpg.jpeg"
-    );
+    const delegateFramePath = path.join(__dirname, "../public/frame/Participating.jpg.jpeg");
+    const visitorWithoutFoodFramePath = path.join(__dirname, "../public/frame/Participating with out food.jpg.jpeg");
 
     let framePath = defaultFramePath;
     if (user.registrationType === "vip" && fs.existsSync(vipFramePath)) {
       framePath = vipFramePath;
     }
+    if (user.registrationType === "delegate" && fs.existsSync(delegateFramePath)) {
+      framePath = delegateFramePath;
+    }
     if (user.registrationType === "exhibitor" && fs.existsSync(exhibitorFramePath)) {
       framePath = exhibitorFramePath;
     }
+
     if (
       user.registrationType === "visitor" &&
       user.packageType === "without_food" &&
@@ -133,6 +135,8 @@ router.get("/image/:id", async (req, res) => {
       badgeText = "STALL";
     } else if (user.registrationType === "vip") {
       badgeText = "";
+    } else if (user.registrationType === "delegate") {
+      badgeText = "";
     } else if (user.registrationType === "exhibitor") {
       badgeText = "";
     } else {
@@ -141,10 +145,11 @@ router.get("/image/:id", async (req, res) => {
     }
 
     const isVip = user.registrationType === "vip";
+    const isDelegate = user.registrationType === "delegate";
     const isExhibitor = user.registrationType === "exhibitor";
-    const isGuestPass = isVip;
-    const nameFont = isVip ? "bold 38px sans-serif" : "bold 40px sans-serif";
-    const placeFont = isVip ? "34px sans-serif" : "36px sans-serif";
+    const isGuestPass = isVip || isDelegate;
+    const nameFont = isVip || isDelegate ? "bold 38px sans-serif" : "bold 40px sans-serif";
+    const placeFont = isVip || isDelegate ? "34px sans-serif" : "36px sans-serif";
     const badgeFont = "bold 30px sans-serif";
 
     /* NAME */

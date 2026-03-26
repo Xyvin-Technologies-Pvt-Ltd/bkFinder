@@ -9,6 +9,7 @@ import AdminUserCreation from "../components/AdminUserCreation";
 function ViewExcel() {
   const [data, setData] = useState([]);
   const [vipData, setVipData] = useState([]);
+  const [delegateData, setDelegateData] = useState([]);
   const [exhibitorData, setExhibitorData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 20;
@@ -37,6 +38,9 @@ function ViewExcel() {
         const vipBookings = (res.data || []).filter(user => user.registrationType === "vip");
         setVipData(vipBookings);
 
+        const delegateBookings = (res.data || []).filter(user => user.registrationType === "delegate");
+        setDelegateData(delegateBookings);
+
         const exhibitorBookings = (res.data || []).filter(user => user.registrationType === "exhibitor");
         setExhibitorData(exhibitorBookings);
       })
@@ -44,6 +48,7 @@ function ViewExcel() {
         console.error("Fetch error:", err);
         setData([]);
         setVipData([]);
+        setDelegateData([]);
         setExhibitorData([]);
       });
   }, []);
@@ -111,6 +116,21 @@ function ViewExcel() {
       return bDate - aDate;
     });
 
+  const filteredDelegateData = (delegateData || [])
+    .filter((user) => {
+      const searchLower = searchTerm.toLowerCase();
+      return (
+        user.name?.toLowerCase().includes(searchLower) ||
+        user.phone?.toLowerCase().includes(searchLower) ||
+        user.place?.toLowerCase().includes(searchLower)
+      );
+    })
+    .sort((a, b) => {
+      const aDate = new Date(a.createdAt || 0).getTime();
+      const bDate = new Date(b.createdAt || 0).getTime();
+      return bDate - aDate;
+    });
+
   const filteredExhibitorData = (exhibitorData || [])
     .filter((user) => {
       const searchLower = searchTerm.toLowerCase();
@@ -129,6 +149,8 @@ function ViewExcel() {
   const activeList =
     activeTab === "vip"
       ? filteredVipData
+      : activeTab === "delegate"
+        ? filteredDelegateData
       : activeTab === "exhibitor"
         ? filteredExhibitorData
         : filteredData;
@@ -161,6 +183,9 @@ function ViewExcel() {
         const vipBookings = (res.data || []).filter(user => user.registrationType === "vip");
         setVipData(vipBookings);
 
+        const delegateBookings = (res.data || []).filter(user => user.registrationType === "delegate");
+        setDelegateData(delegateBookings);
+
         const exhibitorBookings = (res.data || []).filter(user => user.registrationType === "exhibitor");
         setExhibitorData(exhibitorBookings);
       })
@@ -180,6 +205,8 @@ function ViewExcel() {
     const dataToExport =
       activeTab === "vip"
         ? filteredVipData
+        : activeTab === "delegate"
+          ? filteredDelegateData
         : activeTab === "exhibitor"
           ? filteredExhibitorData
           : filteredData;
@@ -201,6 +228,15 @@ function ViewExcel() {
             : "-",
         }))
         : activeTab === "vip"
+          ? dataToExport.map((user) => ({
+            Name: user.name,
+            Phone: user.phone,
+            Place: user.place,
+            Registered_At: user.createdAt
+              ? new Date(user.createdAt).toLocaleString()
+              : "-",
+          }))
+        : activeTab === "delegate"
           ? dataToExport.map((user) => ({
             Name: user.name,
             Phone: user.phone,
@@ -249,6 +285,8 @@ function ViewExcel() {
         ? "Event Bookings"
         : activeTab === "vip"
           ? "Guest Pass"
+        : activeTab === "delegate"
+          ? "Delegate Pass"
         : activeTab === "exhibitor"
           ? "Exhibitor Passes"
         : activeTab === "stall"
@@ -267,6 +305,8 @@ function ViewExcel() {
         ? "event_bookings.xlsx"
         : activeTab === "vip"
           ? "guest_pass.xlsx"
+        : activeTab === "delegate"
+          ? "delegate_pass.xlsx"
         : activeTab === "exhibitor"
           ? "exhibitor_passes.xlsx"
         : activeTab === "stall"
@@ -337,6 +377,18 @@ function ViewExcel() {
             GUEST PASS
           </button>
 
+          {/* DELEGATE TAB */}
+          <button
+            onClick={() => setActiveTab("delegate")}
+            className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
+        ${activeTab === "delegate"
+                ? "bg-blue-100 text-black"
+                : "bg-white text-gray-500 hover:bg-gray-100"
+              }`}
+          >
+            DELEGATE PASS
+          </button>
+
           {/* EXHIBITOR TAB */}
           <button
             onClick={() => setActiveTab("exhibitor")}
@@ -364,6 +416,8 @@ function ViewExcel() {
                     ? data.length
                     : activeTab === "vip"
                       ? vipData.length
+                      : activeTab === "delegate"
+                        ? delegateData.length
                       : activeTab === "exhibitor"
                         ? exhibitorData.length
                     : activeTab === "stall"
@@ -372,7 +426,7 @@ function ViewExcel() {
                 </span>
                 {searchTerm && (
                   <span className="ml-2 text-blue-600">
-                    (Found: {activeTab === "vip" ? filteredVipData.length : activeTab === "exhibitor" ? filteredExhibitorData.length : filteredData.length})
+                    (Found: {activeTab === "vip" ? filteredVipData.length : activeTab === "delegate" ? filteredDelegateData.length : activeTab === "exhibitor" ? filteredExhibitorData.length : filteredData.length})
                   </span>
                 )}
               </p>
@@ -456,6 +510,16 @@ function ViewExcel() {
               )}
 
               {activeTab === "vip" && (
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Place</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Card</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Registered At</th>
+                </tr>
+              )}
+
+              {activeTab === "delegate" && (
                 <tr>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone</th>
@@ -563,6 +627,27 @@ function ViewExcel() {
 
                     {/* VIP rows */}
                     {activeTab === "vip" && (
+                      <>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.name}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.phone}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800">{user.place}</td>
+                        <td className="px-4 py-3">
+                          <a
+                            href={`/card/${user._id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline hover:text-blue-800"
+                          >
+                            View Card
+                          </a>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-800">
+                          {user.createdAt ? new Date(user.createdAt).toLocaleString() : "-"}
+                        </td>
+                      </>
+                    )}
+
+                    {activeTab === "delegate" && (
                       <>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.name}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.phone}</td>
@@ -695,6 +780,15 @@ function ViewExcel() {
                   )}
 
                   {activeTab === "vip" && (
+                    <button
+                      onClick={() => navigate(`/card/${user._id}`)}
+                      className="w-full bg-gray-300 text-gray-900 text-xs font-medium py-2 rounded-md hover:bg-gray-400 transition"
+                    >
+                      View Card
+                    </button>
+                  )}
+
+                  {activeTab === "delegate" && (
                     <button
                       onClick={() => navigate(`/card/${user._id}`)}
                       className="w-full bg-gray-300 text-gray-900 text-xs font-medium py-2 rounded-md hover:bg-gray-400 transition"

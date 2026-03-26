@@ -94,6 +94,10 @@ export const adminRegisterVip = (data) => {
   return API.post("/api/admin/vip/register", data);
 };
 
+export const adminRegisterDelegate = (data) => {
+  return API.post("/api/admin/delegate/register", data);
+};
+
 export const adminRegisterExhibitor = (data) => {
   return API.post("/api/admin/exhibitor/register", data);
 };
