@@ -177,7 +177,7 @@ const EventCardsSection = ({ onBookNow }) => {
   const eventPackages = [
     {
       title: "Visitor Pass",
-      subtitle: "",
+      subtitle: "With Food",
       themeColor: "maroon",
       price: "1499",
       originalPrice: "",
@@ -188,6 +188,21 @@ const EventCardsSection = ({ onBookNow }) => {
         "Entry to networking area",
         "Business Networking opportunity",
         "Welcome Drink, Lunch, Tea snacks",
+        "Business Stall Access"
+      ]
+    },
+    {
+      title: "Visitor Pass",
+      subtitle: "Without Food",
+      themeColor: "blue",
+      price: "999",
+      originalPrice: "",
+      validity: "",
+      actionType: "event_without_food",
+      highlights: [
+        "Access to all Conclave sessions",
+        "Entry to networking area",
+        "Business Networking opportunity",
         "Business Stall Access"
       ]
     },
@@ -229,7 +244,7 @@ const EventCardsSection = ({ onBookNow }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 max-w-6xl mx-auto">
           {eventPackages.map((pkg, index) => (
             <EventCard key={index} card={pkg} />
           ))}

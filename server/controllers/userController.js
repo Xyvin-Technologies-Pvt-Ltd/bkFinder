@@ -9,10 +9,15 @@ const sharp = require("sharp")
 
 const CLIENT_URL = "https://bkfinder.com";
 
+const VISITOR_PACKAGE_PRICES = {
+  with_food: 1499,
+  without_food: 999,
+};
+
 // Add a new user
 const addUser = async (req, res) => {
   try {
-    const { name, phone, place, razorpay_payment_id, razorpay_order_id, razorpay_signature} = req.body;
+    const { name, phone, place, packageType, razorpay_payment_id, razorpay_order_id, razorpay_signature} = req.body;
 
     let photoUrl = "";
     if (req.file) {
@@ -38,6 +43,9 @@ const addUser = async (req, res) => {
 
     // Determine payment status and details
     const isPaid = razorpay_payment_id && razorpay_order_id;
+
+    const normalizedPackageType = packageType === "without_food" ? "without_food" : "with_food";
+    const packagePrice = VISITOR_PACKAGE_PRICES[normalizedPackageType] ?? 1499;
     
     const newUser = new User({
       name,
@@ -45,10 +53,11 @@ const addUser = async (req, res) => {
       place,
       photo: photoUrl,
       registrationType: "visitor",
+      packageType: normalizedPackageType,
       paymentStatus: isPaid ? "paid" : "admin_created",
       paymentId: razorpay_payment_id || "",
       orderId: razorpay_order_id || "",
-      paymentAmount: isPaid ? 999 : 0,
+      paymentAmount: isPaid ? packagePrice : 0,
       paymentDate: isPaid ? new Date() : null,
     });
 

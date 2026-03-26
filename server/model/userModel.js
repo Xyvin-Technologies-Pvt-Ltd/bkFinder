@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema({
     enum: ["visitor", "award", "stall", "vip", "exhibitor"],
     default: "visitor",
   },
+  packageType: {
+    type: String,
+    enum: ["with_food", "without_food"],
+    default: "with_food",
+  },
   cName:{
     type: String,
     default:"",

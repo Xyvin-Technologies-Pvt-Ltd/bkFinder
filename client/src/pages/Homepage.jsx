@@ -68,7 +68,9 @@ function Homepage() {
   const [errorsAward, setErrorsAward] = useState({});
   const [highlightsVisible, setHighlightsVisible] = useState(false);
 
-  const ticketPrice = 1499;
+  const [packageType, setPackageType] = useState("with_food");
+
+  const ticketPrice = packageType === "without_food" ? 999 : 1499;
   const totalMembers = members.length;
   const totalAmount = totalMembers * ticketPrice;
 
@@ -330,12 +332,13 @@ function Homepage() {
     if (!validateMembers()) return;
 
     if (members.length === 1) {
-      await handleRazorpayPayment(1499, async (paymentResponse) => {
+      await handleRazorpayPayment(ticketPrice, async (paymentResponse) => {
         try {
           const fd = new FormData();
           fd.append("name", members[0].name);
           fd.append("phone", members[0].phone);
           fd.append("place", members[0].place);
+          fd.append("packageType", packageType);
           if (formData.photo) fd.append("photo", formData.photo);
 
           // Append payment details if backend needs them
@@ -350,6 +353,7 @@ function Homepage() {
 
           setMembers([{ name: "", phone: "", place: "" }]);
           setFormData({ name: "", phone: "", place: "", photo: null });
+          setPackageType("with_food");
           if (photoRef.current) photoRef.current.value = "";
         } catch (err) {
           console.error("Error submitting form:", err);
@@ -364,6 +368,7 @@ function Homepage() {
         const payload = {
           primaryContact: members[0],
           members,
+          packageType,
           payment: {
             paymentId: paymentResponse.razorpay_payment_id,
             orderId: paymentResponse.razorpay_order_id,
@@ -387,6 +392,7 @@ function Homepage() {
 
         setMembers([{ name: "", phone: "", place: "" }]);
         setFormData({ name: "", phone: "", place: "", photo: null });
+        setPackageType("with_food");
         if (photoRef.current) photoRef.current.value = "";
       } catch (err) {
         console.error(err);
@@ -812,11 +818,41 @@ function Homepage() {
                   <div className="mb-3 flex flex-col items-center justify-center space-y-2">
                     <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-1.5 shadow-sm">
                       <p className="text-emerald-700 font-bold text-sm tracking-wide uppercase">
-                        Visitor Pass: ₹1499/-
+                        Visitor Pass: ₹{ticketPrice}/-
                       </p>
                     </div>
+
+                    <div className="w-full max-w-sm">
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setPackageType("with_food")}
+                          className={`px-3 py-2 rounded-xl text-xs font-bold tracking-wide border transition-colors ${
+                            packageType === "with_food"
+                              ? "bg-emerald-600 text-white border-emerald-600"
+                              : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                          }`}
+                        >
+                          With Food (₹1499)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPackageType("without_food")}
+                          className={`px-3 py-2 rounded-xl text-xs font-bold tracking-wide border transition-colors ${
+                            packageType === "without_food"
+                              ? "bg-emerald-600 text-white border-emerald-600"
+                              : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                          }`}
+                        >
+                          Without Food (₹999)
+                        </button>
+                      </div>
+                    </div>
+
                     <p className="text-slate-500 text-[10px] sm:text-xs font-medium">
-                      (Tea, Snacks, Food included)
+                      {packageType === "without_food"
+                        ? "(Tea, Snacks not included)"
+                        : "(Tea, Snacks, Food included)"}
                     </p>
                     <button
                       type="button"
@@ -1414,6 +1450,20 @@ function Homepage() {
       {/* Event Cards Section */}
       {/* Event Cards Section */}
       <EventCardsSection onBookNow={(type) => {
+        if (type === "event_without_food") {
+          setPackageType("without_food");
+          setActiveForm("event");
+          setShowBooking(true);
+          return;
+        }
+
+        if (type === "event") {
+          setPackageType("with_food");
+          setActiveForm("event");
+          setShowBooking(true);
+          return;
+        }
+
         setActiveForm(type);
         setShowBooking(true);
       }} />

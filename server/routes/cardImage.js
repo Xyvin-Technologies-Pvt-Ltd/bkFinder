@@ -59,6 +59,10 @@ router.get("/image/:id", async (req, res) => {
     const defaultFramePath = path.join(__dirname, "../public/frame/frame.jpg");
     const vipFramePath = path.join(__dirname, "../public/frame/vip-frame.jpg");
     const exhibitorFramePath = path.join(__dirname, "../public/frame/Exhibitor-pass.jpg");
+    const visitorWithoutFoodFramePath = path.join(
+      __dirname,
+      "../public/frame/Participating with out food.jpg.jpeg"
+    );
 
     let framePath = defaultFramePath;
     if (user.registrationType === "vip" && fs.existsSync(vipFramePath)) {
@@ -66,6 +70,13 @@ router.get("/image/:id", async (req, res) => {
     }
     if (user.registrationType === "exhibitor" && fs.existsSync(exhibitorFramePath)) {
       framePath = exhibitorFramePath;
+    }
+    if (
+      user.registrationType === "visitor" &&
+      user.packageType === "without_food" &&
+      fs.existsSync(visitorWithoutFoodFramePath)
+    ) {
+      framePath = visitorWithoutFoodFramePath;
     }
 
     const frame = await loadImage(framePath);

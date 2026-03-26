@@ -9,6 +9,8 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
     place: "",
   });
 
+  const [eventPackageType, setEventPackageType] = useState("with_food");
+
   const [vipData, setVipData] = useState({
     name: "",
     phone: "",
@@ -105,7 +107,10 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
     if (!validateEventForm()) return;
 
     try {
-      const response = await adminRegisterUser(formData);
+      const response = await adminRegisterUser({
+        ...formData,
+        packageType: eventPackageType,
+      });
       toast.success("Event ticket created successfully!");
       onSuccess();
       onClose();
@@ -247,6 +252,36 @@ function AdminUserCreation({ onClose, onSuccess, activeTab }) {
           {/* Event Form */}
           {activeForm === "event" && (
             <form ref={formRef} onSubmit={handleEventSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Package
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEventPackageType("with_food")}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                      eventPackageType === "with_food"
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    With Food (₹1499)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEventPackageType("without_food")}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                      eventPackageType === "without_food"
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    Without Food (₹999)
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Full Name *

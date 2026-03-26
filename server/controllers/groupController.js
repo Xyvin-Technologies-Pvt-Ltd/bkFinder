@@ -5,9 +5,14 @@ const QRCode = require("qrcode");
 
 const CLIENT_URL = "https://bkfinder.com";
 
+const VISITOR_PACKAGE_PRICES = {
+  with_food: 1499,
+  without_food: 999,
+};
+
 const registerGroup = async (req, res) => {
   try {
-    const { primaryContact, members, payment } = req.body;
+    const { primaryContact, members, payment, packageType } = req.body;
 
     if (!primaryContact || !primaryContact.name || !primaryContact.phone) {
       return res.status(400).json({ message: "primaryContact.name and primaryContact.phone are required" });
@@ -36,7 +41,9 @@ const registerGroup = async (req, res) => {
     }
 
     const totalMembers = members.length;
-    const totalAmount = totalMembers * 999;
+    const normalizedPackageType = packageType === "without_food" ? "without_food" : "with_food";
+    const packagePrice = VISITOR_PACKAGE_PRICES[normalizedPackageType] ?? 1499;
+    const totalAmount = totalMembers * packagePrice;
 
     const group = new GroupBooking({
       primaryContactName: primaryContact.name,
@@ -61,10 +68,11 @@ const registerGroup = async (req, res) => {
         phone: member?.phone,
         place: member?.place || "",
         registrationType: "visitor",
+        packageType: normalizedPackageType,
         paymentStatus: "paid",
         paymentId: payment.paymentId,
         orderId: payment.orderId,
-        paymentAmount: 999,
+        paymentAmount: packagePrice,
         paymentDate: new Date(),
         groupId: group._id,
         isGroupMember: true,
