@@ -17,6 +17,8 @@ function ViewExcel() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("event");
   const [sortFilter, setSortFilter] = useState("newest");
+  const [eventPackageFilter, setEventPackageFilter] = useState("all");
+  const [eventPaymentFilter, setEventPaymentFilter] = useState("all");
   const [stallData, setStallData] = useState([]);
   const [awardData, setAwardData] = useState([]);
   const navigate = useNavigate();
@@ -88,25 +90,33 @@ function ViewExcel() {
       );
     })
     .filter((user) => {
-      if (activeTab === "award" || sortFilter === "newest") return true;
+      if (activeTab === "award") return true;
 
-      if (activeTab === "event" && sortFilter === "with_food") {
-        return user.packageType !== "without_food";
+      if (activeTab === "event") {
+        const packageOk =
+          eventPackageFilter === "all"
+            ? true
+            : eventPackageFilter === "without_food"
+              ? user.packageType === "without_food"
+              : user.packageType !== "without_food";
+
+        const paymentOk =
+          eventPaymentFilter === "all" ? true : user.paymentStatus === eventPaymentFilter;
+
+        return packageOk && paymentOk;
       }
 
-      if (activeTab === "event" && sortFilter === "without_food") {
-        return user.packageType === "without_food";
+      if (activeTab === "stall") {
+        if (sortFilter === "newest") return true;
+        return user.paymentStatus === sortFilter;
       }
 
-      return user.paymentStatus === sortFilter;
+      return true;
     })
     .sort((a, b) => {
       const aDate = new Date(a.createdAt || 0).getTime();
       const bDate = new Date(b.createdAt || 0).getTime();
 
-      if (activeTab === "award" || sortFilter === "newest") {
-        return bDate - aDate;
-      }
       return bDate - aDate;
     });
 
@@ -344,6 +354,8 @@ function ViewExcel() {
             onClick={() => {
               setActiveTab("event");
               setSortFilter("newest");
+              setEventPackageFilter("all");
+              setEventPaymentFilter("all");
               setCurrentPage(1);
             }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all
@@ -360,6 +372,8 @@ function ViewExcel() {
             onClick={() => {
               setActiveTab("stall");
               setSortFilter("newest");
+              setEventPackageFilter("all");
+              setEventPaymentFilter("all");
               setCurrentPage(1);
             }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
@@ -376,6 +390,8 @@ function ViewExcel() {
             onClick={() => {
               setActiveTab("award");
               setSortFilter("newest");
+              setEventPackageFilter("all");
+              setEventPaymentFilter("all");
               setCurrentPage(1);
             }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
@@ -392,6 +408,8 @@ function ViewExcel() {
             onClick={() => {
               setActiveTab("vip");
               setSortFilter("newest");
+              setEventPackageFilter("all");
+              setEventPaymentFilter("all");
               setCurrentPage(1);
             }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
@@ -408,6 +426,8 @@ function ViewExcel() {
             onClick={() => {
               setActiveTab("delegate");
               setSortFilter("newest");
+              setEventPackageFilter("all");
+              setEventPaymentFilter("all");
               setCurrentPage(1);
             }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
@@ -424,6 +444,8 @@ function ViewExcel() {
             onClick={() => {
               setActiveTab("exhibitor");
               setSortFilter("newest");
+              setEventPackageFilter("all");
+              setEventPaymentFilter("all");
               setCurrentPage(1);
             }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
@@ -484,7 +506,68 @@ function ViewExcel() {
               }}
               className="h-11 px-4 border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
             />
-            {(activeTab === "event" || activeTab === "stall") && (
+            {activeTab === "event" && (
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <select
+                    value={eventPackageFilter}
+                    onChange={(e) => {
+                      setEventPackageFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="h-11 pl-4 pr-10 border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none"
+                    title="Package"
+                  >
+                    <option value="all">All Packages</option>
+                    <option value="with_food">With Food</option>
+                    <option value="without_food">Without Food</option>
+                  </select>
+                  <svg
+                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+
+                <div className="relative">
+                  <select
+                    value={eventPaymentFilter}
+                    onChange={(e) => {
+                      setEventPaymentFilter(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="h-11 pl-4 pr-10 border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none"
+                    title="Payment Status"
+                  >
+                    <option value="all">All Payments</option>
+                    <option value="paid">Paid</option>
+                    <option value="unpaid">Unpaid</option>
+                    <option value="admin_created">Admin created</option>
+                  </select>
+                  <svg
+                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "stall" && (
               <div className="relative">
                 <select
                   value={sortFilter}
@@ -493,11 +576,9 @@ function ViewExcel() {
                     setCurrentPage(1);
                   }}
                   className="h-11 pl-4 pr-10 border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm appearance-none"
-                  title="Sort by"
+                  title="Payment Status"
                 >
                   <option value="newest">Newest</option>
-                  {activeTab === "event" && <option value="with_food">With Food</option>}
-                  {activeTab === "event" && <option value="without_food">Without Food</option>}
                   <option value="paid">Paid</option>
                   <option value="unpaid">Unpaid</option>
                   <option value="admin_created">Admin created</option>
