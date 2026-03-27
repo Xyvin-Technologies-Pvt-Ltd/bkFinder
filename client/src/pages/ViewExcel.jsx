@@ -89,6 +89,15 @@ function ViewExcel() {
     })
     .filter((user) => {
       if (activeTab === "award" || sortFilter === "newest") return true;
+
+      if (activeTab === "event" && sortFilter === "with_food") {
+        return user.packageType !== "without_food";
+      }
+
+      if (activeTab === "event" && sortFilter === "without_food") {
+        return user.packageType === "without_food";
+      }
+
       return user.paymentStatus === sortFilter;
     })
     .sort((a, b) => {
@@ -222,6 +231,7 @@ function ViewExcel() {
           Name: user.name,
           Phone: user.phone,
           Place: user.place,
+          Package: user.packageType === "without_food" ? "Without Food" : "With Food",
           Payment_Status: user.paymentStatus || "-",
           Registered_At: user.createdAt
             ? new Date(user.createdAt).toLocaleString()
@@ -331,7 +341,11 @@ function ViewExcel() {
 
           {/* EVENT TAB */}
           <button
-            onClick={() => setActiveTab("event")}
+            onClick={() => {
+              setActiveTab("event");
+              setSortFilter("newest");
+              setCurrentPage(1);
+            }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all
         ${activeTab === "event"
                 ? "bg-blue-100 text-black "
@@ -343,7 +357,11 @@ function ViewExcel() {
 
           {/* STALL TAB */}
           <button
-            onClick={() => setActiveTab("stall")}
+            onClick={() => {
+              setActiveTab("stall");
+              setSortFilter("newest");
+              setCurrentPage(1);
+            }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
         ${activeTab === "stall"
                 ? "bg-blue-100 text-black"
@@ -355,7 +373,11 @@ function ViewExcel() {
 
           {/* AWARD TAB */}
           <button
-            onClick={() => setActiveTab("award")}
+            onClick={() => {
+              setActiveTab("award");
+              setSortFilter("newest");
+              setCurrentPage(1);
+            }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
         ${activeTab === "award"
                 ? "bg-blue-100 text-black"
@@ -367,7 +389,11 @@ function ViewExcel() {
 
           {/* VIP TAB */}
           <button
-            onClick={() => setActiveTab("vip")}
+            onClick={() => {
+              setActiveTab("vip");
+              setSortFilter("newest");
+              setCurrentPage(1);
+            }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
         ${activeTab === "vip"
                 ? "bg-blue-100 text-black"
@@ -379,7 +405,11 @@ function ViewExcel() {
 
           {/* DELEGATE TAB */}
           <button
-            onClick={() => setActiveTab("delegate")}
+            onClick={() => {
+              setActiveTab("delegate");
+              setSortFilter("newest");
+              setCurrentPage(1);
+            }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
         ${activeTab === "delegate"
                 ? "bg-blue-100 text-black"
@@ -391,7 +421,11 @@ function ViewExcel() {
 
           {/* EXHIBITOR TAB */}
           <button
-            onClick={() => setActiveTab("exhibitor")}
+            onClick={() => {
+              setActiveTab("exhibitor");
+              setSortFilter("newest");
+              setCurrentPage(1);
+            }}
             className={`px-6 sm:px-10 py-3 font-semibold text-sm sm:text-base transition-all border-l
         ${activeTab === "exhibitor"
                 ? "bg-blue-100 text-black"
@@ -409,9 +443,9 @@ function ViewExcel() {
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Registered Users</h1>
             <div className="flex items-center gap-2 mt-1">
-              <p className="text-sm sm:text-base text-gray-600">
-                Total Registered:
-                <span className="font-semibold">
+              <p className="text-sm sm:text-base text-gray-600 flex items-center gap-2">
+                <span className="font-medium">Total Registered</span>
+                <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-sm font-semibold text-slate-800">
                   {activeTab === "event"
                     ? data.length
                     : activeTab === "vip"
@@ -424,11 +458,9 @@ function ViewExcel() {
                       ? stallData.length
                       : awardData.length}
                 </span>
-                {searchTerm && (
-                  <span className="ml-2 text-blue-600">
-                    (Found: {activeTab === "vip" ? filteredVipData.length : activeTab === "delegate" ? filteredDelegateData.length : activeTab === "exhibitor" ? filteredExhibitorData.length : filteredData.length})
-                  </span>
-                )}
+                <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-sm font-semibold text-blue-700">
+                  Showing: {activeList.length}
+                </span>
               </p>
               <button
                 onClick={refreshData}
@@ -464,6 +496,8 @@ function ViewExcel() {
                   title="Sort by"
                 >
                   <option value="newest">Newest</option>
+                  {activeTab === "event" && <option value="with_food">With Food</option>}
+                  {activeTab === "event" && <option value="without_food">Without Food</option>}
                   <option value="paid">Paid</option>
                   <option value="unpaid">Unpaid</option>
                   <option value="admin_created">Admin created</option>
@@ -503,6 +537,7 @@ function ViewExcel() {
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Place</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Package</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Payment Status</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Card</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Registered At</th>
@@ -572,6 +607,9 @@ function ViewExcel() {
                         <td className="px-4 py-3 text-sm text-gray-800">{user.name}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.phone}</td>
                         <td className="px-4 py-3 text-sm text-gray-800">{user.place}</td>
+                        <td className="px-4 py-3 text-sm text-gray-800">
+                          {user.packageType === "without_food" ? "Without Food" : "With Food"}
+                        </td>
                         <td className="px-4 py-3 text-sm">
                           {user.paymentStatus === "paid" ? (
                             <div>
@@ -750,6 +788,12 @@ function ViewExcel() {
                   <div className="text-xs text-gray-500">{user.phone}</div>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">Place: {user.place}</div>
+
+                {activeTab === "event" && (
+                  <div className="text-xs text-gray-600 mb-1">
+                    Package: {user.packageType === "without_food" ? "Without Food" : "With Food"}
+                  </div>
+                )}
 
                 {activeTab === "stall" && (
                   <div className="text-xs text-gray-600 mb-1">
