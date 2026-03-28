@@ -68,9 +68,9 @@ function Homepage() {
   const [errorsAward, setErrorsAward] = useState({});
   const [highlightsVisible, setHighlightsVisible] = useState(false);
 
-  const [packageType, setPackageType] = useState("with_food");
+  const [packageType, setPackageType] = useState("without_food");
 
-  const ticketPrice = packageType === "without_food" ? 999 : 1499;
+  const ticketPrice = 999;
   const totalMembers = members.length;
   const totalAmount = totalMembers * ticketPrice;
 
@@ -338,7 +338,7 @@ function Homepage() {
           fd.append("name", members[0].name);
           fd.append("phone", members[0].phone);
           fd.append("place", members[0].place);
-          fd.append("packageType", packageType);
+          fd.append("packageType", "without_food");
           if (formData.photo) fd.append("photo", formData.photo);
 
           // Append payment details if backend needs them
@@ -353,7 +353,7 @@ function Homepage() {
 
           setMembers([{ name: "", phone: "", place: "" }]);
           setFormData({ name: "", phone: "", place: "", photo: null });
-          setPackageType("with_food");
+          setPackageType("without_food");
           if (photoRef.current) photoRef.current.value = "";
         } catch (err) {
           console.error("Error submitting form:", err);
@@ -368,7 +368,7 @@ function Homepage() {
         const payload = {
           primaryContact: members[0],
           members,
-          packageType,
+          packageType: "without_food",
           payment: {
             paymentId: paymentResponse.razorpay_payment_id,
             orderId: paymentResponse.razorpay_order_id,
@@ -392,7 +392,7 @@ function Homepage() {
 
         setMembers([{ name: "", phone: "", place: "" }]);
         setFormData({ name: "", phone: "", place: "", photo: null });
-        setPackageType("with_food");
+        setPackageType("without_food");
         if (photoRef.current) photoRef.current.value = "";
       } catch (err) {
         console.error(err);
@@ -822,51 +822,9 @@ function Homepage() {
                       </p>
                     </div>
 
-                    <div className="w-full max-w-sm">
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setPackageType("with_food")}
-                          className={`px-3 py-2 rounded-xl text-xs font-bold tracking-wide border transition-colors ${
-                            packageType === "with_food"
-                              ? "bg-emerald-600 text-white border-emerald-600"
-                              : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                          }`}
-                        >
-                          With Food (₹1499)
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setPackageType("without_food")}
-                          className={`px-3 py-2 rounded-xl text-xs font-bold tracking-wide border transition-colors ${
-                            packageType === "without_food"
-                              ? "bg-emerald-600 text-white border-emerald-600"
-                              : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                          }`}
-                        >
-                          Without Food (₹999)
-                        </button>
-                      </div>
-                    </div>
-
                     <p className="text-slate-500 text-[10px] sm:text-xs font-medium">
-                      {packageType === "without_food"
-                        ? "(Tea, Snacks not included)"
-                        : "(Tea, Snacks, Food included)"}
+                      (Tea, Snacks not included)
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowBooking(false);
-                        const section = document.getElementById("participation-packages");
-                        if (section) {
-                          section.scrollIntoView({ behavior: "smooth" });
-                        }
-                      }}
-                      className="text-blue-600 hover:text-blue-800 text-xs font-semibold underline underline-offset-4 cursor-pointer transition-colors"
-                    >
-                      Know More
-                    </button>
                   </div>
                 </div>
 
@@ -1452,13 +1410,6 @@ function Homepage() {
       <EventCardsSection onBookNow={(type) => {
         if (type === "event_without_food") {
           setPackageType("without_food");
-          setActiveForm("event");
-          setShowBooking(true);
-          return;
-        }
-
-        if (type === "event") {
-          setPackageType("with_food");
           setActiveForm("event");
           setShowBooking(true);
           return;
